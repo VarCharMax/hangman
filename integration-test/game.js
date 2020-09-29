@@ -30,7 +30,6 @@
 
   function withGame(word, callback) {
     page.open(rootUrl + "/", function () {
-      "use strict";
       page.evaluateAsync(
         function (w) {
           $("input[name=word]").val(w);

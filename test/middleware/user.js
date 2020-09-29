@@ -5,7 +5,6 @@ const expect = require("chai").expect;
 const sinon = require("sinon");
 
 describe("Users middleware", () => {
-  const defaultUserId = "user-id-1";
   let request, response;
 
   beforeEach(() => {
@@ -29,8 +28,6 @@ describe("Users middleware", () => {
 
   it("calls the next middleware in the chain", () => {
     // Given
-    //let calledNext = false;
-    //const next = () => (calledNext = true);
     const next = sinon.spy();
 
     // When

@@ -1,0 +1,11 @@
+{
+  "extends": "eslint:recommended",
+  "rules": {
+    "semi": [2, "always"],
+    "quotes": [2, "double"],
+    "strict": [2, "safe"],
+    "no-unused-vars": [2, {
+      "args": "after-used"
+    }]
+  }
+}

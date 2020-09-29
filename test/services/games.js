@@ -1,8 +1,6 @@
 "use strict";
 
 const expect = require("chai").expect;
-const { response } = require("express");
-const { request } = require("http");
 const service = require("../../src/services/games.js");
 describe("Game service", () => {
   const firstUserId = "user-id-1";
