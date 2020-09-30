@@ -2,12 +2,16 @@
 
 const gulp = require("gulp");
 const eslint = require("gulp-eslint");
+const shell = require("gulp-shell");
 const mocha = require("gulp-mocha");
 const env = require("gulp-env");
+const cover = require("gulp-coverage");
+const coveralls = require("gulp-coveralls");
+const { series, parallel } = require("gulp");
 
-gulp.task("lint-server", function () {
+function lint_server() {
   return gulp
-    .src(["src/**/*.js", "!src/public/**/*.js"])
+    .src(["src/**/*.js", "!src/public/**/*.js", "!src/node_modules/**"])
     .pipe(
       eslint({
         envs: ["es6", "node"],
@@ -18,25 +22,25 @@ gulp.task("lint-server", function () {
     )
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task("lint-client", function () {
+function lint_client() {
   return gulp
     .src("src/public/**/*.js")
     .pipe(eslint({ envs: ["browser", "jquery"] }))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task("lint-test", function () {
+function lint_test() {
   return gulp
     .src("test/**/*.js")
     .pipe(eslint({ envs: ["es6", "node", "mocha"] }))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task("lint-integration-test", function () {
+function lint_integration_test() {
   return gulp
     .src("integration-test/**/*.js")
     .pipe(
@@ -47,21 +51,35 @@ gulp.task("lint-integration-test", function () {
     )
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
-});
+}
 
-gulp.task("test", gulp.series("lint-test"), function () {
+function test() {
   env({ vars: { NODE_ENV: "test" } });
-  return gulp.src("test/**/*.js").pipe(mocha());
-});
 
-gulp.task(
-  "lint",
-  gulp.series(
-    // "lint-server",
-    "lint-client",
-    "lint-test",
-    "lint-integration-test"
-  )
+  return (
+    gulp
+      .src("test/**/*.js", { read: false })
+      //.pipe(
+      //  cover.instrument({
+      //    pattern: ["src/**/*.js"],
+      //    debugDirectory: "debug/info",
+      //  })
+      //)
+      .pipe(mocha())
+  );
+  //.pipe(
+  //  cover.report({
+  //    reporter: "json",
+  //    outFile: "testoutput.json",
+  //  })
+  //);
+  //.pipe(cover.gather())
+  //.pipe(cover.format({ reporter: "lcov", outputFile: "test.html" }))
+  //.pipe(gulp.dest("/c/dev/node"));
+  //.pipe(coveralls())
+}
+
+exports.default = series(
+  parallel(lint_server, lint_client, lint_integration_test),
+  series(lint_test, test)
 );
-
-gulp.task("default", gulp.series("lint", "test"));
