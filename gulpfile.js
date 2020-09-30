@@ -3,10 +3,7 @@
 const gulp = require("gulp");
 const eslint = require("gulp-eslint");
 const shell = require("gulp-shell");
-const mocha = require("gulp-mocha");
-const env = require("gulp-env");
-// const cover = require("gulp-coverage");
-// const coveralls = require("gulp-coveralls");
+const run = require("gulp-run");
 const { series, parallel } = require("gulp");
 
 function lint_server() {
@@ -75,29 +72,7 @@ function lint_integration_test() {
 }
 
 function test() {
-  env({ vars: { NODE_ENV: "test" } });
-
-  return (
-    gulp
-      .src("test/**/*.js", { read: false })
-      //.pipe(
-      //  cover.instrument({
-      //    pattern: ["src/**/*.js"],
-      //    debugDirectory: "debug/info",
-      //  })
-      //)
-      .pipe(mocha())
-  );
-  //.pipe(
-  //  cover.report({
-  //    reporter: "json",
-  //    outFile: "testoutput.json",
-  //  })
-  //);
-  //.pipe(cover.gather())
-  //.pipe(cover.format({ reporter: "lcov", outputFile: "test.html" }))
-  //.pipe(gulp.dest("/c/dev/node"));
-  //.pipe(coveralls())
+  return run("npx cross-env NODE_ENV=test nyc mocha test/**/*.js").exec();
 }
 
 exports.integration_test = integration_test;
