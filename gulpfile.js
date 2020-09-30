@@ -5,8 +5,8 @@ const eslint = require("gulp-eslint");
 const shell = require("gulp-shell");
 const mocha = require("gulp-mocha");
 const env = require("gulp-env");
-const cover = require("gulp-coverage");
-const coveralls = require("gulp-coveralls");
+// const cover = require("gulp-coverage");
+// const coveralls = require("gulp-coveralls");
 const { series, parallel } = require("gulp");
 
 function lint_server() {
@@ -38,6 +38,27 @@ function lint_test() {
     .pipe(eslint({ envs: ["es6", "node", "mocha"] }))
     .pipe(eslint.format())
     .pipe(eslint.failAfterError());
+}
+
+function integration_test(done) {
+  const TEST_PORT = 5000;
+
+  let server = require("http")
+    .createServer(require("./src/app.js"))
+    .listen(TEST_PORT, function () {
+      gulp
+        .src("integration-test/**/*.js")
+        .pipe(
+          shell(
+            "node node_modules/phantomjs-prebuilt/bin/phantomjs <%=file.path%>",
+            {
+              env: { TEST_PORT: TEST_PORT },
+            }
+          )
+        )
+        .on("error", () => server.close(done))
+        .on("end", () => server.close(done));
+    });
 }
 
 function lint_integration_test() {
@@ -78,6 +99,8 @@ function test() {
   //.pipe(gulp.dest("/c/dev/node"));
   //.pipe(coveralls())
 }
+
+exports.integration_test = integration_test;
 
 exports.default = series(
   parallel(lint_server, lint_client, lint_integration_test),

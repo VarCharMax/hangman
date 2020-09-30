@@ -3,7 +3,7 @@
 
   var expect = require("chai").expect;
   var page = require("webpage").create();
-  var rootUrl = "http://localhost:3000";
+  var rootUrl = "http://localhost:" + require("system").env.TEST_PORT;
 
   withGame("Example", function () {
     expect(getText("#word")).to.equal("_______");
