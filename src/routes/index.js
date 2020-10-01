@@ -6,18 +6,17 @@ var games = require("../services/games");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
-  var visits = parseInt(req.cookies.visits) || 0;
-  visits += 1;
-  res.cookie("visits", visits);
-
-  res.render("index", {
-    title: "Hangman",
-    visits: visits,
-    userId: req.user.id,
-    createdGames: games.createdBy(req.user.id),
-    availableGames: games.availableTo(req.user.id),
-    partials: { createdGame: "createdGame" },
-  });
+  Promise.all([games.createdBy(req.user.id), games.availableTo(req.user.id)])
+    .then(([created, available]) => {
+      res.render("index", {
+        title: "Hangman",
+        userId: req.user.id,
+        createdGames: created,
+        availableGames: available,
+        partials: { createdGame: "createdGame" },
+      });
+    })
+    .catch(next);
 });
 
 module.exports = router;

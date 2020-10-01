@@ -4,20 +4,26 @@ const express = require("express");
 const router = express.Router();
 const service = require("../services/games");
 
-const checkGameExists = function (id, res, callback) {
-  const game = service.get(id);
-  if (game) {
-    callback(game);
-  } else {
-    res.status(404).send("Non-existent game ID");
-  }
+const checkGameExists = function (id, res, onSuccess, onError) {
+  service
+    .get(id)
+    .then((game) => {
+      if (game) {
+        onSuccess(game);
+      } else {
+        res.status(404).send("Non-existent game ID");
+      }
+    })
+    .catch(onError);
 };
 
 router.post("/", function (req, res, next) {
   const word = req.body.word;
   if (word && /^[A-Za-z]{3,}/.test(word)) {
-    const game = service.create(req.user.id, word);
-    res.redirect(`/games/${game.id}/created`);
+    service
+      .create(req.user.id, word)
+      .then((game) => res.redirect(`/games/${game.id}/created`))
+      .catch(next);
   } else {
     res
       .status(400)
@@ -28,8 +34,11 @@ router.post("/", function (req, res, next) {
 });
 
 router.get("/:id/created", function (req, res, next) {
-  checkGameExists(req.params.id, res, (game) =>
-    res.render("createdGame", game)
+  checkGameExists(
+    req.params.id,
+    res,
+    (game) => res.render("createdGame", game),
+    next
   );
 });
 
@@ -40,16 +49,20 @@ router.get("/:id", function (req, res, next) {
 });
 
 router.post("/:id/guesses", function (req, res, next) {
-  checkGameExists(req.params.id, res, (game) => {
-    res.send({ positions: game.positionsOf(req.body.letter) });
-  });
+  checkGameExists(
+    req.params.id,
+    res,
+    (game) => {
+      res.send({ positions: game.positionsOf(req.body.letter) });
+    },
+    next
+  );
 });
 
 router.delete("/:id", function (req, res, next) {
   checkGameExists(req.params.id, res, (game) => {
     if (game.setBy === req.user.id) {
-      game.remove();
-      res.send();
+      game.remove().then(() => res.send()).catch(next);
     } else {
       res.status(403).send("You don't have permission to delete this game");
     }
