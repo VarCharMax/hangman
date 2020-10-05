@@ -1,22 +1,31 @@
 "use strict";
 
-var express = require("express");
-var router = express.Router();
-var games = require("../services/games");
+modules.export = (gamesService, usersService) => {
+  var express = require("express");
+  var router = express.Router();
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  Promise.all([games.createdBy(req.user.id), games.availableTo(req.user.id)])
-    .then(([created, available]) => {
-      res.render("index", {
-        title: "Hangman",
-        userId: req.user.id,
-        createdGames: created,
-        availableGames: available,
-        partials: { createdGame: "createdGame" },
-      });
-    })
-    .catch(next);
-});
+  router.get("/", function (req, res, next) {
+    Promise.all([
+      gamesService.createdBy(req.user.id),
+      gamesService.availableTo(req.user.id),
+      usersService.getUsername(req.user.id),
+      usersService.getRanking(req.user.id),
+      usersService.getTopPlayers(),
+    ])
+      .then(([createdGames, availableGames, username, ranking, topPlayers]) => {
+        res.render("index", {
+          title: "Hangman",
+          userId: req.user.id,
+          createdGames: createdGames,
+          availableGames: availableGames,
+          username: username,
+          ranking: ranking,
+          topPlayers: topPlayers,
+          partials: { createdGame: "createdGame" },
+        });
+      })
+      .catch(next);
+  });
 
-module.exports = router;
+  return router;
+};

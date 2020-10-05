@@ -40,22 +40,30 @@ function lint_test() {
 function integration_test(done) {
   const TEST_PORT = 5000;
 
-  let server = require("http")
-    .createServer(require("./src/app.js"))
-    .listen(TEST_PORT, function () {
-      gulp
-        .src("integration-test/**/*.js")
-        .pipe(
-          shell(
-            "node node_modules/phantomjs-prebuilt/bin/phantomjs <%=file.path%>",
-            {
-              env: { TEST_PORT: TEST_PORT },
-            }
+  require("./src/config/mongoose.js").then((mongoose) => {
+    let server,
+      teardown = (error) => {
+        require("./src/config/redis.js").quit();
+        server.close(() => mongoose.disconnect(() => done(error)));
+      };
+
+    server = require("http")
+      .createServer(require("./src/app.js"))
+      .listen(TEST_PORT, function () {
+        gulp
+          .src("integration-test/**/*.js")
+          .pipe(
+            shell(
+              "node node_modules/phantomjs-prebuilt/bin/phantomjs <%=file.path%>",
+              {
+                env: { TEST_PORT: TEST_PORT },
+              }
+            )
           )
-        )
-        .on("error", () => server.close(done))
-        .on("end", () => server.close(done));
-    });
+          .on("error", teardown)
+          .on("end", teardown);
+      });
+  });
 }
 
 function lint_integration_test() {

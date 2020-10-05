@@ -1,25 +1,28 @@
 "use strict";
 
-const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("supertest");
 const expect = require("chai").expect;
-const gamesService = require("../../src/services/games");
 
 const userId = "test-user-id";
 
 describe("/games", () => {
-  let agent, app;
+  let agent, app, gamesService;
 
-  before(() => {
-    app = express();
-    app.use(bodyParser.json());
-    app.use((req, res, next) => {
-      req.user = { id: userId };
-      next();
-    });
-    const games = require("../../src/routes/games.js");
-    app.use("/games", games);
+  before((done) => {
+    require("../../src/config/mongoose")
+      .then((mongoose) => {
+        app = require("../../src/app.js")(mongoose);
+        app.use(bodyParser.json());
+        app.use((req, res, next) => {
+          req.user = { id: userId };
+          next();
+        });
+        gamesService = require("../../src/services/games.js")(mongoose);
+        const games = require("../../src/routes/games.js");
+        app.use("/games", games);
+      })
+      .catch(done);
   });
 
   beforeEach(() => {

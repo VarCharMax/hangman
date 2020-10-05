@@ -2,5 +2,18 @@
 	"folders": [{
 		"path": "."
 	}],
-	"settings": {}
+	"settings": {
+		"cSpell.words": [
+			"flushdb",
+			"lcov",
+			"mget",
+			"mockgoose",
+			"mongodb",
+			"withscores",
+			"zincrby",
+			"zrevrange",
+			"zrevrank",
+			"zscore"
+		]
+	}
 }

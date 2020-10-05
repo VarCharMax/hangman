@@ -1,10 +1,20 @@
 "use strict";
 
 const expect = require("chai").expect;
-const service = require("../../src/services/games.js");
+
 describe("Game service", () => {
   const firstUserId = "user-id-1";
   const secondUserId = "user-id-2";
+  let service;
+
+  before((done) => {
+    require("../../src/config/mongoose")
+      .then((mongoose) => {
+        service = require("../../src/services/games")(mongoose);
+        done();
+      })
+      .catch(done);
+  });
 
   beforeEach((done) => {
     service

@@ -23,5 +23,11 @@
      <li><a href="/games/{{id}}">#{{id}}</a></li>
      {{/availableGames}}
    </ul>
+    <h2>Top players</h2>
+    <ol>
+    {{#topPlayers}}
+      <li>{{name}} with {{wins}} wins</li>
+    {{/topPlayers}}
+    </ol>
   </body>
 </html>

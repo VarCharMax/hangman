@@ -5,3 +5,10 @@ script: gulp default integration_test
 node_js:
   - 14
   - 12
+services:
+  - mongodb
+  - redis-server
+env:
+  global:
+    - MONGODB_URL=mongodb://127.0.0.1:27017/hangman
+    - REDIS_URL=redis:127.0.0.1:6397
