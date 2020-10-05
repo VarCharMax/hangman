@@ -1,6 +1,6 @@
 "use strict";
 
-modules.export = (gamesService, usersService) => {
+module.export = (gamesService, usersService) => {
   var express = require("express");
   var router = express.Router();
 

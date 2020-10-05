@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = (mongoose) => {
-  const Game = mongoose.model("Game");
+  let Game = mongoose.model("Game");
 
   if (!Game) {
     const Schema = mongoose.Schema;

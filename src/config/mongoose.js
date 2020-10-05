@@ -1,3 +1,5 @@
+"use strict";
+
 const mongoose = require("mongoose");
 const debug = require("debug")("hangman:config:mongoose");
 mongoose.Promise = Promise;
