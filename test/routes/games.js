@@ -1,5 +1,6 @@
 "use strict";
 
+const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("supertest");
 const expect = require("chai").expect;
@@ -12,15 +13,19 @@ describe("/games", () => {
   before((done) => {
     require("../../src/config/mongoose")
       .then((mongoose) => {
-        app = require("../../src/app.js")(mongoose);
+        app = express(); // require("../../src/app.js")(mongoose);
+
         app.use(bodyParser.json());
+
         app.use((req, res, next) => {
           req.user = { id: userId };
           next();
         });
+
         gamesService = require("../../src/services/games.js")(mongoose);
-        const games = require("../../src/routes/games.js");
+        const games = require("../../src/routes/games.js")(gamesService);
         app.use("/games", games);
+        done();
       })
       .catch(done);
   });

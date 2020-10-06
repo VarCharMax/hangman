@@ -5,11 +5,10 @@
  */
 var debug = require("debug")("hangman:server");
 
-require("../src/config/mongoose").default
+require("../src/config/mongoose")
   .then((mongoose) => {
     var app = require("../src/app")(mongoose);
     var http = require("http");
-    const mongoose = require("../src/config/mongoose").default;
 
     /**
      * Get port from environment and store in Express.
@@ -30,7 +29,7 @@ require("../src/config/mongoose").default
 
     server.listen(port);
     server.on("error", onError);
-    server.on("listening", onListening);
+    // server.on("listening", onListening);
   })
   .catch(function (error) {
     console.log(error);

@@ -1,6 +1,6 @@
 "use strict";
 
-module.export = (gamesService, usersService) => {
+module.exports = (gamesService, usersService) => {
   var express = require("express");
   var router = express.Router();
 
@@ -8,7 +8,7 @@ module.export = (gamesService, usersService) => {
     Promise.all([
       gamesService.createdBy(req.user.id),
       gamesService.availableTo(req.user.id),
-      usersService.getUsername(req.user.id),
+      usersService.getUserName(req.user.id),
       usersService.getRanking(req.user.id),
       usersService.getTopPlayers(),
     ])

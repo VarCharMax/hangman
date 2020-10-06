@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = (mongoose) => {
-  let Game = mongoose.model("Game");
+  let Game = mongoose.models["Game"];
 
   if (!Game) {
     const Schema = mongoose.Schema;
@@ -25,15 +25,15 @@ module.exports = (mongoose) => {
     };
 
     Game = mongoose.model("Game", gameSchema);
-
-    return {
-      create: (userId, word) => {
-        let game = new Game({ setBy: userId, word: word.toUpperCase() });
-        return game.save();
-      },
-      get: (id) => Game.findById(id),
-      createdBy: (userId) => Game.find({ setBy: userId }),
-      availableTo: (userId) => Game.where("setBy").ne(userId),
-    };
   }
+
+  return {
+    create: (userId, word) => {
+      const game = new Game({ setBy: userId, word: word.toUpperCase() });
+      return game.save();
+    },
+    createdBy: (userId) => Game.find({ setBy: userId }),
+    availableTo: (userId) => Game.where("setBy").ne(userId),
+    get: (id) => Game.findById(id),
+  };
 };

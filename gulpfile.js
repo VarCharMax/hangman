@@ -46,9 +46,8 @@ function integration_test(done) {
         require("./src/config/redis.js").quit();
         server.close(() => mongoose.disconnect(() => done(error)));
       };
-
     server = require("http")
-      .createServer(require("./src/app.js"))
+      .createServer(require("./src/app.js")(mongoose))
       .listen(TEST_PORT, function () {
         gulp
           .src("integration-test/**/*.js")
@@ -84,8 +83,8 @@ function test() {
 }
 
 exports.integration_test = integration_test;
-
-exports.default = series(
+exports.default = series(test);
+exports.default_1 = series(
   parallel(lint_server, lint_client, lint_integration_test),
   series(lint_test, test)
 );

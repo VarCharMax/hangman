@@ -9,8 +9,8 @@ describe("User service", function () {
       const userId = "user-id-1";
       const name = "User Name";
       service
-        .setUsername(userId, name)
-        .then(() => service.getUsername(userId))
+        .setUserName(userId, name)
+        .then(() => service.getUserName(userId))
         .then((actual) => expect(actual).to.equal(name))
         .then(() => done(), done);
     });
