@@ -83,8 +83,8 @@ function test() {
 }
 
 exports.integration_test = integration_test;
-exports.default = series(test);
-exports.default_1 = series(
+// exports.default = series(test);
+exports.default = series(
   parallel(lint_server, lint_client, lint_integration_test),
   series(lint_test, test)
 );
