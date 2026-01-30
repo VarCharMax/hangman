@@ -1,17 +1,12 @@
-"use strict";
+/* eslint-disable no-undef */
 
-const debug = require("debug")("hangman:global");
+import mongoose from '../src/config/mongoose.js';
 
-before(function (done) {
-  require("../src/config/redis.js")
-    .flushdbAsync()
-    .then(() => done());
+before(function () {
+  // redisClient.flushdbAsync().then(done);
 });
 
 after(function (done) {
-  debug("ending");
-  require("../src/config/redis.js").quit();
-  require("../src/config/mongoose.js").default.then((mongoose) =>
-    mongoose.disconnect(done)
-  );
+  // redisClient.quit();
+  mongoose.then((mongoose) => mongoose.disconnect(done));
 });

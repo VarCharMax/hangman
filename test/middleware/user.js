@@ -1,10 +1,11 @@
-"use strict";
+/* eslint-disable no-undef */
 
-const middleware = require("../../src/middleware/users");
-const expect = require("chai").expect;
-const sinon = require("sinon");
+import { expect } from 'chai';
+import sinon from 'sinon';
+import middleware from '../../src/middleware/users.js';
 
-describe("Users middleware", () => {
+describe('Users middleware', () => {
+  const defaultUserId = 'user-id-1';
   let request, response;
 
   beforeEach(() => {
@@ -12,28 +13,49 @@ describe("Users middleware", () => {
     response = { cookie: () => {} };
   });
 
-  it("if the user already signed in, reads their ID from a cookie and exposes the user on the request", () => {
+  it('if the user already signed in, reads their ID from a cookie and exposes the user on the request', () => {
     // Given
-    request.cookies.userId = undefined;
-    response = { cookie: sinon.spy() };
+    request.cookies.userId = defaultUserId;
 
     // When
     middleware(request, response, () => {});
 
+    // Then
     expect(request.user).to.exist;
-    const newUserId = request.user.id;
-    expect(newUserId).to.exist;
-    expect(response.cookie.calledWith("userId", newUserId)).to.be.true;
+    expect(request.user.id).to.equal(defaultUserId);
   });
 
-  it("calls the next middleware in the chain", () => {
+  it('calls the next middleware in the chain', () => {
     // Given
+    // let calledNext = false;
+    // const next = () => (calledNext = true);
+
     const next = sinon.spy();
 
     // When
     middleware(request, response, next);
 
     // Then
+    // expect(calledNext).to.be.true;
     expect(next.called).to.be.true;
   });
+
+  it(
+    'if the user is not already signed in, ' +
+      'creates a new user id and stores it in a cookie',
+    () => {
+      // Given
+      request.cookies.userId = undefined;
+      response = { cookie: sinon.spy() };
+
+      // When
+      middleware(request, response, () => {});
+
+      // Then
+      expect(request.user).to.exist;
+      const newUserId = request.user.id;
+      expect(newUserId).to.exist;
+      expect(response.cookie.calledWith('userId', newUserId)).to.be.true;
+    }
+  );
 });
