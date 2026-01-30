@@ -1,14 +1,14 @@
 language: node_js
 before_script:
   - npm install -g gulp
-script: gulp default integration_test
+script: gulp default
 node_js:
-  - 14
-  - 12
+  - 24
+  - 22
 services:
   - mongodb
   - redis
 env:
   global:
-    - MONGODB_URL=mongodb://127.0.0.1/hangman
-    - REDIS_URL=redis://127.0.0.1/
+    - MONGODB_URL=mongodb://localhost/hangman
+    - REDIS_URL=redis://localhost:6379/

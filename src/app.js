@@ -1,56 +1,71 @@
-"use strict";
+ 
 
-module.exports = (mongoose) => {
-  var createError = require("http-errors");
-  var express = require("express");
-  var path = require("path");
-  var cookieParser = require("cookie-parser");
-  var bodyParser = require("body-parser");
-  var logger = require("morgan");
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import render from 'hogan-express';
+import logger from 'morgan';
+import path from 'path';
+import favicon from 'serve-favicon';
+import { fileURLToPath } from 'url';
+import users from './middleware/users.js';
+import games from './routes/games.js';
+import routes from './routes/index.js';
+import gameService from './services/games.js';
 
-  var users = require("./middleware/users");
-  let gamesService = require("./services/games")(mongoose);
-  let usersService = require("./services/users");
-  var indexRouter = require("./routes/index")(gamesService, usersService);
-  var gamesRouter = require("./routes/games")(gamesService, usersService);
-  let profile = require("./routes/profile")(usersService);
+export default function application(mongoose) {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-  var app = express();
+  var app = new express();
+  let gs = gameService(mongoose);
 
-  // view engine setup
-  app.set("views", path.join(__dirname, "views"));
-  app.set("view engine", "hjs");
+  app.set('view engine', 'html');
+  app.set('views', path.join(__dirname, 'views'));
+  app.engine('html', render);
 
-  if (app.get("env") === "development") {
-    app.use(logger("dev"));
+  app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+  if (app.get('env') === 'development') {
+    app.use(logger('dev'));
   }
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
+  app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, 'public')));
   app.use(users);
-
-  app.use("/", indexRouter);
-  app.use("/games", gamesRouter);
-  app.use("/profile", profile);
+  app.use('/', routes(gs));
+  app.use('/games', games(gs));
 
   // catch 404 and forward to error handler
   app.use(function (req, res, next) {
-    next(createError(404));
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
   });
 
-  // error handler
+  // error handlers
+
+  // development error handler
+  // will print stacktrace
+  if (app.get('env') === 'development') {
+    app.use(function (err, req, res, next) {
+      res.status(err.status || 500);
+      res.render('error', {
+        message: err.message,
+        error: err,
+      });
+    });
+  }
+
+  // production error handler
+  // no stacktraces leaked to user
   app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
-
-    // render the error page
     res.status(err.status || 500);
-    res.render("error");
+    res.render('error', {
+      message: err.message,
+      error: {},
+    });
   });
-
   return app;
-};
+}

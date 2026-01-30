@@ -1,31 +1,25 @@
-"use strict";
+import express from 'express';
 
-module.exports = (gamesService, usersService) => {
-  var express = require("express");
-  var router = express.Router();
+export default function router(gameService) {
+  const routes = express.Router();
 
-  router.get("/", function (req, res, next) {
+  /* GET home page. */
+  routes.get('/', function (req, res, next) {
     Promise.all([
-      gamesService.createdBy(req.user.id),
-      gamesService.availableTo(req.user.id),
-      usersService.getUserName(req.user.id),
-      usersService.getRanking(req.user.id),
-      usersService.getTopPlayers(),
+      gameService.createdBy(req.user.id),
+      gameService.availableTo(req.user.id),
     ])
-      .then(([createdGames, availableGames, username, ranking, topPlayers]) => {
-        res.render("index", {
-          title: "Hangman",
+      .then(([created, available]) => {
+        res.render('index', {
+          title: 'Hangman',
           userId: req.user.id,
-          createdGames: createdGames,
-          availableGames: availableGames,
-          username: username,
-          ranking: ranking,
-          topPlayers: topPlayers,
-          partials: { createdGame: "createdGame" },
+          createdGames: created,
+          availableGames: available,
+          partials: { createdGame: 'createdGame' },
         });
       })
       .catch(next);
   });
 
-  return router;
-};
+  return routes;
+}

@@ -1,21 +1,20 @@
 $(function () {
-  "use strict";
+  'use strict';
 
-  $("#createdGames").on("click", ".delete", function () {
-    var $this = $(this);
-    $.ajax($this.attr("href"), {
-      method: "delete",
-    }).done(function () {
-      $this.closest(".game").remove();
+  $('#createGame').submit(function (event) {
+    $.post($(this).attr('action'), { word: $('#word').val() }, function (result) {
+      $('#createdGames').append(result);
     });
     event.preventDefault();
   });
 
-  $("#createGame").submit(function (event) {
-    $.post($(this).attr("action"), { word: $("#word").val() }, function (
-      result
-    ) {
-      $("#createdGames").append(result);
+  $('#createdGames').on('click', '.delete', function (event) {
+    var $this = $(this);
+    $.ajax($this.attr('href'), {
+      method: 'delete',
+    }).done(function (val) {
+      console.log(val);
+      $this.closest('.game').remove();
     });
     event.preventDefault();
   });
