@@ -1,23 +1,25 @@
-"use strict";
+import redisClient from '../config/redis.js';
 
-let redisClient = require("../config/redis.js");
+const { promise, resolve, reject } = Promise.withResolvers();
 
-module.exports = {
-  getUserName: (userId) => redisClient.getAsync(`user:${userId}:name`),
-  setUserName: (userId, name) =>
-    redisClient.setAsync(`user:${userId}:name`, name),
-  recordWin: (userId) => redisClient.zincrbyAsync("user:wins", 1, userId),
-  getTopPlayers: () =>
-    redisClient
-      .zrevrangeAsync("user:wins", 0, 2, "withscores")
-      .then((interleaved) => {
+export default redisClient.then((redis) => {
+  if (!redis) {
+    reject('Redis server not available.');
+  }
+
+  const redisServer = {
+    getUserName: async (userId) => redis.get(`user:${userId}:name`),
+    setUserName: async (userId, name) => redis.set(`user:${userId}:name`, name),
+    recordWin: async (userId) => redis.zincrby('user:wins', 1, userId),
+    getTopPlayers: async () =>
+      redis.zrevrange('user:wins', 0, 2, 'withscores').then((interleaved) => {
         if (interleaved.length === 0) {
           return [];
         }
         let userIds = interleaved
-          .filter((user, index) => index % 2 === 0)
+          .filter((_user, index) => index % 2 === 0)
           .map((userId) => `user:${userId}:name`);
-        return redisClient.mgetAsync(userIds).then((names) =>
+        return redis.mget(userIds).then((names) =>
           names.map((username, index) => ({
             name: username,
             userId: interleaved[index * 2],
@@ -25,15 +27,24 @@ module.exports = {
           }))
         );
       }),
-  getRanking: (userId) => {
-    return Promise.all([
-      redisClient.zrevrankAsync("user:wins", userId),
-      redisClient.zscoreAsync("user:wins", userId, userId),
-    ]).then((out) => {
+    getRanking: async (userId) => {
+      const out = Promise.all([
+        redis.zrevrank('user:wins', userId),
+        redis.zscore('user:wins', userId, userId),
+      ]);
       if (out[0] === null) {
         return null;
       }
       return { rank: out[0] + 1, wins: parseInt(out[1], 10) };
-    });
-  },
-};
+    },
+  };
+  /*
+  if (err) {
+    reject(err);
+  } else {
+    resolve(redisServer);
+  }
+  */
+  resolve(redisServer);
+  return promise;
+});

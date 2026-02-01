@@ -1,15 +1,20 @@
-"use strict";
+import { createClient } from 'redis';
+import debug from 'debug';
+import redisjs from 'redis-js';
 
-const bluebird = require("bluebird");
-const debug = require("debug")("hangman:config:redis");
+const { promise, resolve, reject } = Promise.withResolvers();
+const redisdebug = debug('hangman:config:redis');
+let redisClient;
 
 if (process.env.REDIS_URL) {
-  let redis = require("redis");
-  bluebird.promisifyAll(redis.RedisClient.prototype);
-  module.exports = redis.createClient(process.env.REDIS_URL);
+  redisClient = createClient(process.env.REDIS_URL);
+  redisClient.on('ready', () => resolve(redisClient));
+  redisClient.on('error', (err) => reject(err));
+  redisClient.connect();
 } else {
-  debug("Redis URL not found. Falling back to mock DB...");
-  let redisClient = require("redis-js");
-  bluebird.promisifyAll(redisClient);
-  module.exports = redisClient;
+  redisdebug('Redis URL not found. Falling back to mock DB ...');
+  redisClient = redisjs;
+  resolve(redisClient);
 }
+
+export default promise;

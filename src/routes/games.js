@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
-
 import express from 'express';
 
-export default function router(gameService) {
+export default function router(gameService, usersService) {
   const routes = express.Router();
 
   routes.post('/', function (req, res, next) {
@@ -33,11 +31,19 @@ export default function router(gameService) {
   });
 
   routes.post('/:id/guesses', function (req, res, next) {
-    checkGameExists(req.params.id, res, (game) => {
-      res.send({
-        positions: game.positionsOf(req.body.letter),
-      });
-    });
+    checkGameExists(
+      req.params.id,
+      res,
+      (game) => {
+        if (req.user && game.matches(req.body.word)) {
+          usersService.recordWin(req.user.id);
+        }
+        res.send({
+          positions: game.positionsOf(req.body.letter),
+        });
+      },
+      next
+    );
   });
 
   routes.delete('/:id', function (req, res, next) {
@@ -60,7 +66,6 @@ export default function router(gameService) {
 
   routes.get('/:id/created', function (req, res, _next) {
     checkGameExists(req.params.id, res, (game) => {
-      console.log(`New game: ${game}`);
       res.render('createdGame', { id: game.id, word: game.word });
     });
   });

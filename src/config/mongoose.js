@@ -1,16 +1,16 @@
-import debug from 'debug';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import debug from 'debug';
 import mongoose from 'mongoose';
 
 const dbdebug = debug('hangman:config:mongoose');
 
-let mongoServer;
 let mongoconn = '';
-('mongodb://10.211.55.2/hangman');
 
-if (!mongoconn) {
+if (process.env.MONGODB_URL) {
+  mongoconn = process.env.MONGODB_URL;
+} else {
   dbdebug('MongoDB URL not found. Falling back to in-memory database...');
-  mongoServer = await MongoMemoryServer.create();
+  const mongoServer = await MongoMemoryServer.create();
   mongoconn = mongoServer.getUri();
 }
 

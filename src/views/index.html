@@ -22,5 +22,19 @@
       <li><a href="/games/{{id}}">#{{id}}</a></li>
       {{/availableGames}}
     </ul>
+    <h2>Top players</h2>
+    <ol>
+      {{#topPlayers}}
+      <li>{{name}} with {{wins}} wins</li>
+      {{/topPlayers}}
+    </ol>
+    <hr />
+    <h3>Lobby</h3>
+    <form class="chat" data-room="lobby">
+      <div id="messages"></div>
+      {{#loggedIn}}
+      <input id="message" /><input type="submit" value="Send" />
+      {{/loggedIn}}
+    </form>
   </body>
 </html>
