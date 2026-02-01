@@ -4,6 +4,10 @@ Classic Hangman game implemented in Node.js, Express front-end, MongoDB backend,
 
 Based on code from a fairly old Node.js book by Harry Cummings.
 
+Even though the project is old, I thought it would be a useful exercise to upgrade it to the latest ES6 standards.
+
+The downside is that Node.js probably wouldn't be the idea choice for this kind of application now.
+
 The main things I have done are:
 
 - converted the code base to ES6 modules.
