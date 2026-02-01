@@ -23,6 +23,6 @@ It isn't completely functional just yet, but compiles and will run.
 Main issues
 
 - one redis function isn't working. I think this is due to the async architecure, which is a bit complicated in this case.
-- There is a problem with the tests, which seems to be due to ESM not working well with mocks with await:
+- There was a problem with the tests, apparently due to ESM not working well with mocks with await:
   `Failed to run Mocha due to error message: " require() cannot be used on an ESM graph with top-level await.`
-  The problem is I'm not the one using `require()`, so I can't address the problem directly. The await is being used in the mongoose mock library. Since it's only used in tests, removing it and replacing it (presumably) with a Promise callback will be tricky.
+  The problem is I'm not the one using `require()`, so I couldn't address the problem directly. The await is being used in the mongoose mock library. I've worked around this by making both the live and mock implementations return the same Promise.
