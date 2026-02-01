@@ -2,6 +2,8 @@
 
 Classic Hangman game implemented in Node.js, Express front-end, MongoDB backend, Redis real-time scoring, Mocha unit tests.
 
+Based on code from a fairly old Node.js book by Harry Cummings.
+
 The main things I have done are:
 
 - converted the code base to ES6 modules.
