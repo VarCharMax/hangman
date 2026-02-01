@@ -12,7 +12,7 @@ The downside is that Node.js probably wouldn't be the idea choice for this kind 
 
 The main things I have done are:
 
-- converted the code base to ES6 modules.
+- converted the code base to ESM.
 - replaced obsolete packages. Specifically:
   - Bluebird. (Promisify lib no longer needed - all newer libraries are async.)
   - Istanbul. (Replaced by nyc.)
@@ -22,5 +22,7 @@ The main things I have done are:
 It isn't completely functional just yet, but compiles and will run.
 Main issues
 
-- one redis function isn't working.
-- tests were working but somehow have become broken after new functionality added. Since Mocha won't load them, it feels like a syntax error somewhere, but nothing is getting flagged.
+- one redis function isn't working. I think this is due to the async architecure, which is a bit complicated in this case.
+- There is a problem with the tests, which seems to be due to ESM not working well with mocks with await:
+  `Failed to run Mocha due to error message: " require() cannot be used on an ESM graph with top-level await.`
+  The problem is I'm not the one using `require()`, so I can't address the problem directly. The await is being used in the mongoose mock library. Since it's only used in tests, removing it and replacing it (presumably) with a Promise callback will be tricky.
