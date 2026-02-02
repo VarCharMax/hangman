@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 
-import * as service from '../../src/services/users.js';
-
 import { expect } from 'chai';
+import service from '../../src/services/users.js';
 
 let u_service;
 
@@ -20,7 +19,7 @@ describe('User service', function () {
       const name = 'User Name';
       u_service
         .setUserName(userId, name)
-        .then(() => service.getUserName(userId))
+        .then(() => u_service.getUserName(userId))
         .then((actual) => expect(actual).to.equal(name))
         .then(() => done(), done);
     });
