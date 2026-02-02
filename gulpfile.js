@@ -106,7 +106,7 @@ const lint_integration_test = () => {
 
 const test = () => {
   return run(
-    'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --colors test/**/*.js'
+    'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --exit --colors test/**/*.js'
   ).exec();
 };
 
