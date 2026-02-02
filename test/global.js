@@ -8,5 +8,10 @@ before(function () {
 
 after(function (done) {
   // redisClient.quit();
-  mongoose.then((mongoose) => mongoose.disconnect(done));
+
+  mongoose.then((mongoose) => {
+    console.log('Closing db connection ...');
+    mongoose.disconnect();
+    done();
+  });
 });
