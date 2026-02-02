@@ -78,6 +78,7 @@ const lint_test = () => {
     .pipe(eslint.failAfterError());
 };
 
+// eslint-disable-next-line no-unused-vars
 const lint_integration_test = () => {
   return gulp
     .src('integration-test/**/*.js')
