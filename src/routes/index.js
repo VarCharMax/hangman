@@ -18,7 +18,7 @@ export default function router(gameService, usersService) {
       usersService.getRanking(userId),
       // usersService.getTopPlayers(),
     ])
-      .then(([created, available, username, ranking, top]) => {
+      .then(([created, available, username, ranking]) => {
         res.render('index', {
           title: 'Hangman',
           userId: userId,

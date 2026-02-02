@@ -47,8 +47,11 @@ export default db
     process.exit(1);
   });
 
+/*
 function adapt(expressMiddleware) {
   return (socket, next) => {
     expressMiddleware(socket.request, socket.request.res, next);
   };
+
 }
+*/

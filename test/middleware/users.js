@@ -2,16 +2,15 @@
 
 import { expect } from 'chai';
 import sinon from 'sinon';
-import factory from '../../src/middleware/users.js';
+import middleware from '../../src/middleware/users.js';
 
 describe('Users middleware', () => {
   const defaultUserId = 'user-id-1';
-  let request, response, middleware;
+  let request, response;
 
   beforeEach(() => {
-    request = { cookies: { userId: defaultUserId } };
-    let usersService = { getUserName: async () => sinon.stub() };
-    middleware = factory(usersService);
+    request = { cookies: {} };
+    response = { cookie: () => {} };
   });
 
   it('if the user already signed in, reads their ID from a cookie and exposes the user on the request', () => {
@@ -27,10 +26,6 @@ describe('Users middleware', () => {
   });
 
   it('calls the next middleware in the chain', () => {
-    // Given
-    // let calledNext = false;
-    // const next = () => (calledNext = true);
-
     const next = sinon.spy();
 
     // When

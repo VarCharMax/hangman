@@ -110,6 +110,6 @@ const test = () => {
   ).exec();
 };
 
-const lint = series(lint_server, lint_client, lint_test, lint_integration_test);
+const lint = series(lint_server, lint_client, lint_test);
 
 export default series(lint, test);

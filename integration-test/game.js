@@ -1,39 +1,39 @@
 (function () {
-  "use strict";
+  'use strict';
 
-  var expect = require("chai").expect;
-  var page = require("webpage").create();
-  var rootUrl = "http://localhost:" + require("system").env.TEST_PORT || 3000;
+  var expect = require('chai').expect;
+  var page = require('webpage').create();
+  var rootUrl = 'http://localhost:' + require('system').env.TEST_PORT || 3000;
 
-  withGame("Example", function () {
-    expect(getText("#word")).to.equal("_______");
+  withGame('Example', function () {
+    expect(getText('#word')).to.equal('_______');
 
     page.evaluate(function () {
       $(document).ajaxComplete(window.callPhantom);
     });
 
-    page.sendEvent("keydown", page.event.key.E);
+    page.sendEvent('keydown', page.event.key.E);
     page.onCallback = verify(function () {
-      expect(getText("#word")).to.equal("E_____E");
-      expect(getText("#missedLetters")).to.be.empty;
+      expect(getText('#word')).to.equal('E_____E');
+      expect(getText('#missedLetters')).to.be.empty;
 
-      page.sendEvent("keydown", page.event.key.T);
+      page.sendEvent('keydown', page.event.key.T);
       page.onCallback = verify(function () {
-        expect(getText("#word")).to.equal("E_____E");
-        expect(getText("#missedLetters")).to.equal("T");
+        expect(getText('#word')).to.equal('E_____E');
+        expect(getText('#missedLetters')).to.equal('T');
 
-        console.log("Test completed successfully!");
+        console.log('Test completed successfully!');
         phantom.exit();
       });
     });
   });
 
   function withGame(word, callback) {
-    page.open(rootUrl + "/", function () {
+    page.open(rootUrl + '/', function () {
       page.evaluateAsync(
         function (w) {
-          $("input[name=word]").val(w);
-          $("form#createGame").submit();
+          $('input[name=word]').val(w);
+          $('form#createGame').submit();
         },
         0,
         word
@@ -45,7 +45,7 @@
 
       page.onCallback = function () {
         var gamePath = page.evaluate(function () {
-          return $("#createdGames .game a").first().attr("href");
+          return $('#createdGames .game a').first().attr('href');
         });
 
         page.onCallback = undefined;
@@ -67,7 +67,7 @@
       try {
         expectations();
       } catch (e) {
-        console.log("Test failed!");
+        console.log('Test failed!');
         handleError(e.message);
       }
     };
