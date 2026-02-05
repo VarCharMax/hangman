@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { createClient } from 'redis';
 import redisjs from 'redis-js';
+import { promisify } from 'util';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const redisdebug = debug('hangman:config:redis');
@@ -14,7 +15,10 @@ if (process.env.REDIS_URL) {
 } else {
   redisdebug('Redis URL not found. Falling back to mock DB ...');
   redisClient = redisjs.createClient();
+  promisify(redisClient.zrange).bind(redisClient);
   resolve(redisClient);
 }
 
 export default promise;
+
+export { redisClient };

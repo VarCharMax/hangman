@@ -8,11 +8,11 @@ export default redisClient.then((redis) => {
   }
 
   const redisServer = {
-    getUserName: async (userId) => redis.get(`user:${userId}:name`),
-    setUserName: async (userId, name) => redis.set(`user:${userId}:name`, name),
-    recordWin: async (userId) => redis.zincrby('user:wins', 1, userId),
+    getUserName: (userId) => redis.get(`user:${userId}:name`),
+    setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
+    recordWin: (userId) => redis.zincrby('user:wins', 1, userId),
     getTopPlayers: async () =>
-      redis.zrevrange('user:wins', 0, 2, 'withscores').then((interleaved) => {
+      await redis.zrange('user:wins', 0, 2, 'rev', 'withscores').then((interleaved) => {
         if (interleaved.length === 0) {
           return [];
         }

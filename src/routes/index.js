@@ -16,9 +16,9 @@ export default function router(gameService, usersService) {
       gameService.availableTo(userId),
       usersService.getUserName(userId),
       usersService.getRanking(userId),
-      // usersService.getTopPlayers(),
+      usersService.getTopPlayers(),
     ])
-      .then(([created, available, username, ranking]) => {
+      .then(([created, available, username, ranking, top]) => {
         res.render('index', {
           title: 'Hangman',
           userId: userId,
@@ -26,7 +26,7 @@ export default function router(gameService, usersService) {
           availableGames: available,
           username: username,
           ranking: ranking,
-          // topPlayers: top,
+          topPlayers: top,
           partials: { createdGame: 'createdGame' },
         });
       })
