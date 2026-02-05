@@ -10,7 +10,6 @@ after(function (done) {
   // redisClient.quit();
 
   mongoose.then((mongoose) => {
-    console.log('Closing db connection ...');
     mongoose.disconnect();
     devServer.stop();
     done();
