@@ -2,11 +2,11 @@ import debug from 'debug';
 import http from 'http';
 import application from './app.js';
 import dbProvider from './config/mongoose.js';
+import { redisClient } from './config/redis.js';
 
 // import { Server as sock } from 'socket.io';
 
 const serverdebug = debug('hangman:server');
-// eslint-disable-next-line no-unused-vars
 const { promise, resolve, reject } = Promise.withResolvers();
 
 export default dbProvider
@@ -16,7 +16,7 @@ export default dbProvider
     application(db).then((app) => {
       server = http.createServer(app);
       server.on('close', () => {
-        // require('../src/config/redis.js').quit();
+        redisClient.destroy();
         db.disconnect();
       });
       resolve(server);
@@ -26,7 +26,7 @@ export default dbProvider
   })
   .catch((err) => {
     serverdebug(`DB Error: ${err}`);
-    process.exit(1);
+    reject(err);
   });
 
 /*

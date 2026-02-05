@@ -29,7 +29,7 @@ It isn't completely functional just yet, but compiles and will run.
 
 Main issues:
 
-- One redis function isn't working (`topPlayers()`). Because it's saying the `zrevrange()` method doesn't exist when it clearly does, I think this might be due to the async architecure it's embedded in, which is a bit complicated in this case.
+- Have just discovered that the redis-mock library is not asynchronous, which is why methods like `getTopPlyaers()` are crashing in dev. I'll have to try to rig up async method mocks.
 - There was a problem with the tests, due to ESM not working well with mocks using await (see above):
   `Failed to run Mocha due to error message: "require() cannot be used on an ESM graph with top-level await.`
   The problem is I'm not the one using `require()`, so I couldn't address the problem directly. `await` is being used quite reasonably in the `mongoose` mock code. I've worked around this by making both the live and mock implementations return the same Promise.
