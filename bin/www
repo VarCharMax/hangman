@@ -13,7 +13,7 @@ server
     s.on('listening', onListening.bind(s));
   })
   .catch(function (error) {
-    console.log(error);
+    serverdebug(error);
     process.exit(1);
   });
 
