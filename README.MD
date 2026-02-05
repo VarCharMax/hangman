@@ -33,4 +33,8 @@ Main issues:
 - There was a problem with the tests, due to ESM not working well with mocks using await (see above):
   `Failed to run Mocha due to error message: "require() cannot be used on an ESM graph with top-level await.`
   The problem is I'm not the one using `require()`, so I couldn't address the problem directly. `await` is being used quite reasonably in the `mongoose` mock code. I've worked around this by making both the live and mock implementations return the same Promise.
-- Tests are working. Had to increase hook timeout. Also, `mondodb.disconnect()` no longer supports a callback.
+- Unit tests are all working. Had to increase hook timeout. Important to call `.stop()` on mongo test server - that's why the tests were hanging at one point. Also, `mondodb.disconnect()` no longer supports a callback.
+
+## TODO
+
+- DB implementation isn't fully DI - I'm calling library-specific methods in native code. Methods should be wrapped in order to isolate database implementation from calling code.
