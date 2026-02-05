@@ -1,5 +1,3 @@
- 
-
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import debug from 'debug';
@@ -10,14 +8,15 @@ import path from 'path';
 import favicon from 'serve-favicon';
 import { fileURLToPath } from 'url';
 import users from './middleware/users.js';
+import games from './routes/games.js';
 import routes from './routes/index.js';
 import gameService from './services/games.js';
 import userService from './services/users.js';
 
 const appdebug = debug('hangman:app');
-// const { promise, resolve, reject } = Promise.withResolvers();
 
 export default function application(mongoose) {
+  const { promise, resolve, reject } = Promise.withResolvers();
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
 
@@ -40,9 +39,9 @@ export default function application(mongoose) {
     .then((gs) => {
       userService
         .then((us) => {
-          app.use(users(us));
+          app.use(users);
           app.use('/', routes(gs, us));
-          // app.use('/games', games(gs, us));
+          app.use('/games', games(gs, us));
 
           // catch 404 and forward to error handler
           app.use(function (_req, _res, next) {
@@ -74,16 +73,20 @@ export default function application(mongoose) {
               error: {},
             });
           });
+
+          resolve(app);
         })
         .catch((err) => {
           appdebug(err);
-          process.exit(1);
+          reject(err);
+          // process.exit(1);
         });
     })
     .catch((err) => {
       appdebug(err);
-      process.exit(1);
+      reject(err);
+      // process.exit(1);
     });
 
-  return app;
+  return promise;
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import mongoose from '../src/config/mongoose.js';
+import mongoose, { devServer } from '../src/config/mongoose.js';
 
 before(function () {
   // redisClient.flushdbAsync().then(done);
@@ -12,6 +12,7 @@ after(function (done) {
   mongoose.then((mongoose) => {
     console.log('Closing db connection ...');
     mongoose.disconnect();
+    devServer.ShutDown();
     done();
   });
 });

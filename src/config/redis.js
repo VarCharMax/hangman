@@ -1,5 +1,5 @@
-import { createClient } from 'redis';
 import debug from 'debug';
+import { createClient } from 'redis';
 import redisjs from 'redis-js';
 
 const { promise, resolve, reject } = Promise.withResolvers();

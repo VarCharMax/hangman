@@ -8,10 +8,10 @@ export default redisClient.then((redis) => {
   }
 
   const redisServer = {
-    getUserName: async (userId) => redis.get(`user:${userId}:name`),
-    setUserName: async (userId, name) => redis.set(`user:${userId}:name`, name),
-    recordWin: async (userId) => redis.zincrby('user:wins', 1, userId),
-    getTopPlayers: async () =>
+    getUserName: (userId) => redis.get(`user:${userId}:name`),
+    setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
+    recordWin: (userId) => redis.zincrby('user:wins', 1, userId),
+    getTopPlayers: () =>
       redis.zrevrange('user:wins', 0, 2, 'withscores').then((interleaved) => {
         if (interleaved.length === 0) {
           return [];
@@ -27,7 +27,7 @@ export default redisClient.then((redis) => {
           }))
         );
       }),
-    getRanking: async (userId) => {
+    getRanking: (userId) => {
       const out = Promise.all([
         redis.zrevrank('user:wins', userId),
         redis.zscore('user:wins', userId, userId),

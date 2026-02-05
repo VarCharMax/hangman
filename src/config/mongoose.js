@@ -14,6 +14,7 @@ db.once('open', () => {
 db.on('error', reject);
 
 let mongoconn = '';
+let devServer = null;
 
 if (process.env.MONGODB_URL) {
   mongoconn = process.env.MONGODB_URL;
@@ -21,9 +22,12 @@ if (process.env.MONGODB_URL) {
 } else {
   dbdebug('MongoDB URL not found. Falling back to in-memory database...');
   MongoMemoryServer.create().then((mongoServer) => {
+    devServer = mongoServer;
     mongoconn = mongoServer.getUri();
     mongoose.connect(mongoconn);
   });
 }
 
 export default promise;
+
+export { devServer };

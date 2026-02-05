@@ -10,7 +10,7 @@ server
 
     s.listen(port);
     s.on('error', onError);
-    // app.on('listening', onListening.bind(server));
+    s.on('listening', onListening.bind(s));
   })
   .catch(function (error) {
     console.log(error);
