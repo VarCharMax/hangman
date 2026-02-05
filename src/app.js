@@ -39,7 +39,7 @@ export default function application(mongoose) {
     .then((gs) => {
       userService
         .then((us) => {
-          app.use(users);
+          app.use(users(us));
           app.use('/', routes(gs, us));
           app.use('/games', games(gs, us));
 
