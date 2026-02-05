@@ -6,6 +6,7 @@ import dbProvider from './config/mongoose.js';
 // import { Server as sock } from 'socket.io';
 
 const serverdebug = debug('hangman:server');
+// eslint-disable-next-line no-unused-vars
 const { promise, resolve, reject } = Promise.withResolvers();
 
 export default dbProvider

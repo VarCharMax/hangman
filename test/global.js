@@ -12,7 +12,7 @@ after(function (done) {
   mongoose.then((mongoose) => {
     console.log('Closing db connection ...');
     mongoose.disconnect();
-    devServer.ShutDown();
+    devServer.stop();
     done();
   });
 });

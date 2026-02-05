@@ -13,7 +13,7 @@ if (process.env.REDIS_URL) {
   redisClient.connect();
 } else {
   redisdebug('Redis URL not found. Falling back to mock DB ...');
-  redisClient = redisjs;
+  redisClient = redisjs.createClient();
   resolve(redisClient);
 }
 
