@@ -1,7 +1,7 @@
 import gulp, { series } from 'gulp';
 
-import globals from 'globals';
 import eslint from 'gulp-eslint-new';
+import globals from 'globals';
 import run from 'gulp-run';
 
 const lint_server = () => {
@@ -41,6 +41,7 @@ const lint_client = () => {
               globals: {
                 ...globals.browser,
                 ...globals.jquery,
+                io: false,
               },
             },
           },
