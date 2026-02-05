@@ -79,13 +79,11 @@ export default function application(mongoose) {
         .catch((err) => {
           appdebug(err);
           reject(err);
-          // process.exit(1);
         });
     })
     .catch((err) => {
       appdebug(err);
       reject(err);
-      // process.exit(1);
     });
 
   return promise;
