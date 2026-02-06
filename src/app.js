@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import users from './middleware/users.js';
 import games from './routes/games.js';
 import routes from './routes/index.js';
+import profile from './routes/profile.js';
 import gameService from './services/games.js';
 import userService from './services/users.js';
 
@@ -42,6 +43,7 @@ export default function application(mongoose) {
           app.use(users(us));
           app.use('/', routes(gs, us));
           app.use('/games', games(gs, us));
+          app.use('/profiles', profile(us));
 
           // catch 404 and forward to error handler
           app.use(function (_req, _res, next) {
@@ -55,7 +57,7 @@ export default function application(mongoose) {
           // development error handler
           // will print stacktrace
           if (app.get('env') === 'development') {
-            app.use(function (err, _req, res, _next) {
+            app.use(function (err, _req, res, next) {
               res.status(err.status || 500);
               res.render('error', {
                 message: err.message,
@@ -66,7 +68,7 @@ export default function application(mongoose) {
 
           // production error handler
           // no stacktraces leaked to user
-          app.use(function (err, _req, res, _next) {
+          app.use(function (err, _req, res, next) {
             res.status(err.status || 500);
             res.render('error', {
               message: err.message,
