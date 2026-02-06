@@ -11,13 +11,10 @@ let redisClient;
 if (process.env.REDIS_URL) {
   redisClient = createClient({
     url: process.env.REDIS_URL,
-    // socket: { host: '10.211.55.2', port: 6379 },
   });
   redisClient.on('ready', () => resolve(redisClient));
   redisClient.on('error', (err) => reject(err));
-  redisClient.connect().then((r) => {
-    console.log(r);
-  });
+  redisClient.connect();
 } else {
   redisdebug('Redis URL not found. Falling back to mock DB ...');
 
