@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { createClient } from 'redis';
 import debug from 'debug';
 import redisjs from 'redis-js';
@@ -7,7 +9,10 @@ const redisdebug = debug('hangman:config:redis');
 let redisClient;
 
 if (process.env.REDIS_URL) {
-  redisClient = createClient(process.env.REDIS_URL);
+  redisClient = createClient({
+    url: process.env.REDIS_URL,
+    // socket: { host: '10.211.55.2', port: 6379 },
+  });
   redisClient.on('ready', () => resolve(redisClient));
   redisClient.on('error', (err) => reject(err));
   redisClient.connect();
@@ -17,6 +22,11 @@ if (process.env.REDIS_URL) {
   let redisClientTmp = redisjs.createClient();
 
   let redisClientMock = {
+    connect: () => {
+      return new Promise((resolve, reject) => {
+        resolve(() => {});
+      });
+    },
     zrange: (name, start, end, param1, param2) => {
       return new Promise((resolve, reject) => {
         let val = redisClientTmp.zrange(name, start, end, param1, param2);

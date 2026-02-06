@@ -1,12 +1,11 @@
-'use strict';
+import express from 'express';
 
-module.exports = (service) => {
-  var express = require('express');
+export default (service) => {
   var router = express.Router();
 
   router.post('/', function (req, res, next) {
     service
-      .setUsername(req.user.id, req.body.name)
+      .setUserName(req.user.id, req.body.name)
       .then(() => res.redirect('/'))
       .catch(next);
   });
