@@ -10,3 +10,16 @@ body {
 a {
   color: #00b7ff;
 }
+
+#messages p b {
+  margin-right: 1em;
+}
+
+#messages p.action {
+  font-style: italic;
+}
+
+#messages p.warning {
+  font-weight: bold;
+  color: red;
+}
