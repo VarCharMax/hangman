@@ -1,6 +1,6 @@
-﻿// import EventEmitter from 'events';
+﻿import EventEmitter from 'events';
 
-// const emitter = new EventEmitter();
+const emitter = new EventEmitter();
 
 export default function gameService(mongoose) {
   const { promise, resolve, reject } = Promise.withResolvers();
@@ -32,8 +32,8 @@ export default function gameService(mongoose) {
       return this.word === word.toUpperCase();
     };
 
-    // gameSchema.post('save', (game) => emitter.emit('gameSaved', game));
-    // gameSchema.post('remove', (game) => emitter.emit('gameRemoved', game));
+    gameSchema.post('save', (game) => emitter.emit('gameSaved', game));
+    gameSchema.post('remove', (game) => emitter.emit('gameRemoved', game));
 
     Game = mongoose.model('Game', gameSchema);
   }
@@ -47,9 +47,13 @@ export default function gameService(mongoose) {
     get: async (id) => Game.findById(id),
     createdBy: async (userId) => Game.find({ setBy: userId }),
     availableTo: async (userId) => Game.find({ setBy: { $ne: userId } }),
+    events: emitter,
   };
 
   resolve(gs_methods);
 
   return promise;
 }
+
+const events = emitter;
+export { events };
