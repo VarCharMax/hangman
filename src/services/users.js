@@ -7,16 +7,16 @@ export default redisClient
     const redisServer = {
       getUserName: (userId) => redis.get(`user:${userId}:name`),
       setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
-      recordWin: (userId) => redis.zincrby('user:wins', 1, userId),
+      recordWin: (userId) => redis.zIncrBy('user:wins', 1, userId),
       getTopPlayers: () =>
-        redis.zrange('user:wins', 0, 2, 'rev', 'withscores').then((interleaved) => {
+        redis.zRange('user:wins', 0, 2, 'rev', 'withscores').then((interleaved) => {
           if (interleaved.length === 0) {
             return [];
           }
           let userIds = interleaved
             .filter((_user, index) => index % 2 === 0)
             .map((userId) => `user:${userId}:name`);
-          return redis.mget(userIds).then((names) =>
+          return redis.mGet(userIds).then((names) =>
             names.map((username, index) => ({
               name: username,
               userId: interleaved[index * 2],
@@ -26,8 +26,8 @@ export default redisClient
         }),
       getRanking: (userId) => {
         const out = Promise.all([
-          redis.zrevrank('user:wins', userId),
-          redis.zscore('user:wins', userId, userId),
+          redis.zRevRank('user:wins', userId),
+          redis.zScore('user:wins', userId, userId),
         ]);
         if (out[0] === null) {
           return null;

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 
-import { createClient } from 'redis';
 import debug from 'debug';
+import { createClient } from 'redis';
 import redisjs from 'redis-js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
@@ -15,7 +15,9 @@ if (process.env.REDIS_URL) {
   });
   redisClient.on('ready', () => resolve(redisClient));
   redisClient.on('error', (err) => reject(err));
-  redisClient.connect();
+  redisClient.connect().then((r) => {
+    console.log(r);
+  });
 } else {
   redisdebug('Redis URL not found. Falling back to mock DB ...');
 
@@ -27,10 +29,10 @@ if (process.env.REDIS_URL) {
         resolve(() => {});
       });
     },
-    zrange: (name, start, end, param1, param2) => {
+    zRange: (name, start, end, param1, param2) => {
       return new Promise((resolve, reject) => {
-        let val = redisClientTmp.zrange(name, start, end, param1, param2);
-        resolve(val);
+        let returnVal = redisClientTmp.zRange(name, start, end, param1, param2);
+        resolve(returnVal);
       });
     },
     get: (name) => {
@@ -45,27 +47,27 @@ if (process.env.REDIS_URL) {
         resolve(returnVal);
       });
     },
-    zincrby: (key, val, id) => {
+    zIncrBy: (key, val, id) => {
       return new Promise((resolve, reject) => {
-        let returnVal = redisClientTmp.set(key, val, id);
+        let returnVal = redisClientTmp.zIncrBy(key, val, id);
         resolve(returnVal);
       });
     },
-    mget: (ids) => {
+    mGet: (ids) => {
       return new Promise((resolve, reject) => {
-        let returnVal = redisClientTmp.mget(ids);
+        let returnVal = redisClientTmp.mGet(ids);
         resolve(returnVal);
       });
     },
-    zrevrank: (val, id) => {
+    zRevRank: (val, id) => {
       return new Promise((resolve, reject) => {
-        let returnVal = redisClientTmp.zrevrank(val, id);
+        let returnVal = redisClientTmp.zRevRank(val, id);
         resolve(returnVal);
       });
     },
-    zscore: (key, user1, user2) => {
+    zScore: (key, user1, user2) => {
       return new Promise((resolve, reject) => {
-        let returnVal = redisClientTmp.zscore(key, user1, user2);
+        let returnVal = redisClientTmp.zScore(key, user1, user2);
         resolve(returnVal);
       });
     },

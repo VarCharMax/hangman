@@ -1,11 +1,10 @@
-import { Server as Socket } from 'socket.io';
-import application from './app.js';
-import createChatClient from './realltime/chat.js';
-import dbProvider from './config/mongoose.js';
 import debug from 'debug';
 import http from 'http';
-import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
+import { Server as Socket } from 'socket.io';
+import application from './app.js';
+import dbProvider from './config/mongoose.js';
 import { redisClient } from './config/redis.js';
+import createChatClient from './realltime/chat.js';
 
 const serverdebug = debug('hangman:server');
 const { promise, resolve, reject } = Promise.withResolvers();
@@ -23,16 +22,18 @@ export default dbProvider
           db.disconnect();
         });
 
+        // Chat connectivity.
         let io = new Socket(server);
         createChatClient(io);
 
-        // Don't configure in test scenarios.
+        // Federated io via redis.
+        // Don't configure redis cluster in test scenarios.
         if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-          if (redisClient) {
-            const subClient = redisClient.duplicate();
-            await subClient.connect();
-            io.adapter(redisAdapter(redisClient, subClient));
-          }
+          // if (redisClient) {
+          //   const subClient = redisClient.duplicate();
+          //   await subClient.connect();
+          //  io.adapter(redisAdapter(redisClient, subClient));
+          //}
         }
 
         resolve(server);
