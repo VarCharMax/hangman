@@ -1,3 +1,4 @@
+import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
 import debug from 'debug';
 import http from 'http';
 import { Server as Socket } from 'socket.io';
@@ -29,11 +30,11 @@ export default dbProvider
         // Federated io via redis.
         // Don't configure redis cluster in test scenarios.
         if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-          // if (redisClient) {
-          //   const subClient = redisClient.duplicate();
-          //   await subClient.connect();
-          //  io.adapter(redisAdapter(redisClient, subClient));
-          //}
+          if (redisClient) {
+            const subClient = redisClient.duplicate();
+            await subClient.connect();
+            io.adapter(redisAdapter(redisClient, subClient));
+          }
         }
 
         resolve(server);
