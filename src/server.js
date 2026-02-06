@@ -5,7 +5,7 @@ import { Server as Socket } from 'socket.io';
 import application from './app.js';
 import dbProvider from './config/mongoose.js';
 import { redisClient } from './config/redis.js';
-import createChatClient from './realltime/chat.js';
+import createChatClient from './realtime/chat.js';
 
 const serverdebug = debug('hangman:server');
 const { promise, resolve, reject } = Promise.withResolvers();
