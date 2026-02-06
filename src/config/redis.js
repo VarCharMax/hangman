@@ -23,6 +23,7 @@ if (process.env.REDIS_URL) {
 
   let redisClientTmp = redisjs.createClient();
 
+  // Mock methods aren't asynchronous, so we wrap them in Promises.
   let redisClientMock = {
     connect: () => {
       return new Promise((resolve, reject) => {
