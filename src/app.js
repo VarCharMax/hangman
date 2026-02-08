@@ -16,7 +16,7 @@ import userService from './services/users.js';
 
 const appdebug = debug('hangman:app');
 
-export default function application(mongoose) {
+export default (db) => {
   const { promise, resolve, reject } = Promise.withResolvers();
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
@@ -36,7 +36,7 @@ export default function application(mongoose) {
   app.use(cookieParser());
   app.use(express.static(path.join(__dirname, 'public')));
 
-  gameService(mongoose)
+  gameService(db)
     .then((gs) => {
       userService
         .then((us) => {
@@ -89,4 +89,4 @@ export default function application(mongoose) {
     });
 
   return promise;
-}
+};

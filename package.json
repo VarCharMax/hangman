@@ -4,7 +4,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "start": "cross-env PORT=3000 REDIS_URL=redis://default:foobared@127.0.0.1:6379 DEBUG='hangman:server' node ./bin/www",
+    "start": "cross-env PORT=3000 REDIS_URL=redis://default@127.0.0.1:6379 DEBUG='hangman:server' node ./bin/www",
     "test": "cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js"
   },
   "nyc": {
@@ -21,10 +21,12 @@
   "dependencies": {
     "@socket.io/redis-adapter": "^8.3.0",
     "body-parser": "~2.2.2",
+    "connect-redis": "^9.0.0",
     "cookie-parser": "~1.4.7",
     "cross-env": "^10.1.0",
     "debug": "~4.4.3",
     "express": "~5.2.1",
+    "express-session": "^1.19.0",
     "hogan-express": "^0.5.2",
     "mongoose": "^9.1.5",
     "morgan": "~1.10.1",

@@ -1,8 +1,9 @@
 ﻿import EventEmitter from 'events';
 
 const emitter = new EventEmitter();
+let gs_methods;
 
-export default function gameService(mongoose) {
+export default (mongoose) => {
   const { promise, resolve, reject } = Promise.withResolvers();
 
   if (!mongoose) {
@@ -39,7 +40,7 @@ export default function gameService(mongoose) {
   }
 
   //Closure
-  const gs_methods = {
+  gs_methods = {
     create: async (userId, word) => {
       let game = new Game({ setBy: userId, word: word.toUpperCase() });
       return game.save();
@@ -53,7 +54,8 @@ export default function gameService(mongoose) {
   resolve(gs_methods);
 
   return promise;
-}
+};
 
 const events = emitter;
-export { events };
+const gameService = gs_methods;
+export { events, gameService };

@@ -1,27 +1,43 @@
 export default (io) => {
-  io.on('connection', (socket) => {
+  const namespace = io.of('/chat');
+
+  namespace.on('connection', (socket) => {
     const username = socket.request.user.name;
 
-    if (username) {
-      socket.broadcast.emit('chatMessage', {
-        username: username,
-        message: 'has arrived',
-        type: 'action',
-      });
-    }
+    socket.on('joinRoom', (room) => {
+      socket.join(room);
 
-    socket.on('chatMessage', (message) => {
-      if (!username) {
-        socket.emit('chatMessage', {
-          message: 'Please choose a username',
-          type: 'warning',
-        });
-      } else {
-        io.emit('chatMessage', {
+      if (username) {
+        socket.broadcast.to.room(room).emit('chatMessage', {
           username: username,
-          message: message,
+          message: 'has arrived',
+          type: 'action',
         });
       }
+
+      socket.on('chatMessage', (message) => {
+        if (!username) {
+          socket.emit('chatMessage', {
+            message: 'Please choose a username',
+            type: 'warning',
+          });
+        } else {
+          namespace.to.room(room).emit('chatMessage', {
+            username: username,
+            message: message,
+          });
+        }
+      });
+
+      socket.on('disconnect', () => {
+        if (username) {
+          socket.broadcast.to(room).emit('chatMessage', {
+            username: username,
+            message: 'has left',
+            type: 'action',
+          });
+        }
+      });
     });
   });
 };

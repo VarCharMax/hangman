@@ -1,6 +1,6 @@
 import express from 'express';
 
-export default function router(gameService, usersService) {
+export default (gameService, usersService) => {
   const router = express.Router();
 
   /* GET home page. */
@@ -34,4 +34,4 @@ export default function router(gameService, usersService) {
   });
 
   return router;
-}
+};

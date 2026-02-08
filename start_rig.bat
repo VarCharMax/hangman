@@ -2,7 +2,7 @@
 REM START /B redis-server
 REM START /B mongod --dbpath C:\data\mongodb
 set MONGODB_URL=mongodb://10.211.55.2/hangman
-set REDIS_URL=redis://default:foobared@127.0.0.1:6379
+set REDIS_URL=redis://default@127.0.0.1:6379
 timeout /T 2 > NUL
 set PORT=3000
 START /B npm start

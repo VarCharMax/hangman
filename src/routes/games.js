@@ -1,6 +1,6 @@
 import express from 'express';
 
-export default function router(gameService, usersService) {
+export default (gameService, usersService) => {
   const routes = express.Router();
 
   routes.post('/', function (req, res, next) {
@@ -84,4 +84,4 @@ export default function router(gameService, usersService) {
   };
 
   return routes;
-}
+};

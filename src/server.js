@@ -8,18 +8,19 @@ import dbProvider from './config/mongoose.js';
 import { redisClient } from './config/redis.js';
 import users from './middleware/users.js';
 import createChatClient from './realtime/chat.js';
+import realtimeGames from './realtime/games.js';
+import { gameService } from './services/games.js';
 import { userService } from './services/users.js';
 
-const serverdebug = debug('hangman:server');
+const serverdebug = debug('hangman:db');
 const { promise, resolve, reject } = Promise.withResolvers();
 
 export default dbProvider
   .then((db) => {
     serverdebug('Server starting ...');
-    let server = null;
     application(db)
       .then(async (app) => {
-        server = http.createServer(app);
+        const server = http.createServer(app);
 
         server.on('close', () => {
           redisClient.destroy();
@@ -43,6 +44,7 @@ export default dbProvider
         }
 
         createChatClient(io);
+        realtimeGames(io, gameService);
 
         resolve(server);
       })

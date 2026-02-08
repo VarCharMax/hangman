@@ -1,8 +1,12 @@
 $(document).ready(function () {
   'use strict';
-  var socket = io();
 
-  $('form.chat').submit(function (event) {
+  var chat = $('form.chat');
+  var socket = io('/chat');
+
+  socket.emit('joinRoom', chat.data('room'));
+
+  chat.submit(function (event) {
     socket.emit('chatMessage', $('#message').val());
     $('#message').val('');
     event.preventDefault();
