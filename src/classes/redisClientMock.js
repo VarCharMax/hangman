@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import EventEmitter from 'events';
 import redisjs from 'redis-js';
 

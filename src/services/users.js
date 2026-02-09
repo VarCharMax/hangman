@@ -26,14 +26,15 @@ export default redisClient
           );
         }),
       getRanking: (userId) => {
-        const out = Promise.all([
+        Promise.all([
           redis.zRevRank('user:wins', userId),
           redis.zScore('user:wins', userId, userId),
-        ]);
-        if (out[0] === null) {
-          return null;
-        }
-        return { rank: out[0] + 1, wins: parseInt(out[1], 10) };
+        ]).then(([rank, score]) => {
+          if (rank == null) {
+            return null;
+          }
+          return { rank: rank + 1, wins: parseInt(score, 10) };
+        });
       },
     };
 

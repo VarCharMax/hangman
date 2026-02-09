@@ -53,8 +53,8 @@ dbProvider
       if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
         redisClient.then((rd) => {
           const subClient = rd.duplicate();
-          subClient.connect();
-          io.adapter(redisAdapter(redisClient, subClient));
+          // subClient.connect();
+          // io.adapter(redisAdapter(redisClient, subClient));
         });
       }
 
