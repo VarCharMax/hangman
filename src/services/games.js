@@ -1,15 +1,8 @@
 ﻿import EventEmitter from 'events';
 
 const emitter = new EventEmitter();
-let gs_methods;
 
-export default (mongoose) => {
-  const { promise, resolve, reject } = Promise.withResolvers();
-
-  if (!mongoose) {
-    reject('Database not available.');
-  }
-
+export default async function (mongoose) {
   let Game = mongoose.models['Game'];
 
   if (!Game) {
@@ -40,7 +33,7 @@ export default (mongoose) => {
   }
 
   //Closure
-  gs_methods = {
+  let gs_methods = {
     create: async (userId, word) => {
       let game = new Game({ setBy: userId, word: word.toUpperCase() });
       return game.save();
@@ -51,11 +44,14 @@ export default (mongoose) => {
     events: emitter,
   };
 
-  resolve(gs_methods);
-
-  return promise;
-};
+  return new Promise((resolve, reject) => {
+    if (!mongoose) {
+      reject('Database not available.');
+    }
+    resolve(gs_methods);
+  });
+}
 
 const events = emitter;
-const gameService = gs_methods;
-export { events, gameService };
+// const gameService = gs_methods;
+export { events };

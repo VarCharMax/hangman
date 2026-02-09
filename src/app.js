@@ -14,12 +14,11 @@ import profile from './routes/profile.js';
 import gameService from './services/games.js';
 import userService from './services/users.js';
 
-const appdebug = debug('hangman:app');
-
 export default (db) => {
   const { promise, resolve, reject } = Promise.withResolvers();
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
+  const appdebug = debug('hangman:app');
 
   var app = new express();
 
