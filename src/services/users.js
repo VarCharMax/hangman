@@ -1,11 +1,10 @@
 import redisClient from '../config/redis.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
-let userService;
 
 export default redisClient
   .then((redis) => {
-    userService = {
+    const userService = {
       getUserName: (userId) => redis.get(`user:${userId}:name`),
       setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
       recordWin: (userId) => redis.zIncrBy('user:wins', 1, userId),
@@ -39,6 +38,7 @@ export default redisClient
     };
 
     resolve(userService);
+
     return promise;
   })
   .catch((err) => {
