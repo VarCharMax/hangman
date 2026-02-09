@@ -13,7 +13,7 @@ export default (io) => {
       socket.join(room);
 
       if (username) {
-        socket.broadcast.to.room(room).emit('chatMessage', {
+        socket.to(room).emit('chatMessage', {
           username: username,
           message: 'has arrived',
           type: 'action',
@@ -27,7 +27,7 @@ export default (io) => {
             type: 'warning',
           });
         } else {
-          namespace.to.room(room).emit('chatMessage', {
+          namespace.to(room).emit('chatMessage', {
             username: username,
             message: message,
           });

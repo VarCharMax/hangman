@@ -9,8 +9,8 @@ import gameService from './services/games.js';
 import http from 'http';
 import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
 import redisClient from './config/redis.js';
-import userService from './services/users.js';
-import users from './middleware/users.js';
+import { default as userService } from './services/users.js';
+import usersMW from './middleware/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
@@ -41,11 +41,11 @@ dbProvider
       }
 
       // Wire up Socket to existing middlware.
-      io.use(adapt(cookieParser()));
+      io.engine.use(cookieParser());
 
       userService
         .then((us) => {
-          io.use(adapt(users(us)));
+          io.engine.use(usersMW(us));
         })
         .catch((err) => {
           reject(err);
@@ -72,10 +72,3 @@ dbProvider
   });
 
 export default promise;
-
-// Shim to make Express middleware work with Socket IO.
-function adapt(expressMiddleware) {
-  return (socket, next) => {
-    expressMiddleware(socket.request, socket.request.res, next);
-  };
-}
