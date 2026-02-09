@@ -1,6 +1,7 @@
 'use strict';
 
-const passport = require('passport');
+import passport from 'passport';
+
 const TwitterStrategy = require('passport-twitter').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 
