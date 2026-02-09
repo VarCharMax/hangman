@@ -12,7 +12,7 @@ import path from 'path';
 import profileRoute from './routes/profile.js';
 import render from 'hogan-express';
 import userService from './services/users.js';
-import users from './middleware/users.js';
+import usersMW from './middleware/users.js';
 
 export default (db) => {
   const { promise, resolve, reject } = Promise.withResolvers();
@@ -38,7 +38,7 @@ export default (db) => {
     .then((gs) => {
       userService
         .then((us) => {
-          app.use(users(us));
+          app.use(usersMW(us));
           app.use('/', homeRoute(gs, us));
           app.use('/games', gamesRoute(gs, us));
           app.use('/profiles', profileRoute(us));
