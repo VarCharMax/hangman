@@ -13,13 +13,14 @@ import userService from './services/users.js';
 import users from './middleware/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
-
-let server;
+const serverdebug = debug('hangman:server');
 
 dbProvider
   .then((db) => {
     application(db).then((app) => {
-      server = http.createServer(app);
+      serverdebug('Server starting ...');
+
+      const server = http.createServer(app);
 
       server.on('close', () => {
         redisClient.then((rd) => {
@@ -51,10 +52,10 @@ dbProvider
       createChatClient(io);
 
       if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-        redisClient.then((rd) => {
+        redisClient.then(async (rd) => {
           const subClient = rd.duplicate();
-          // subClient.connect();
-          // io.adapter(redisAdapter(redisClient, subClient));
+          await subClient.connect();
+          io.adapter(redisAdapter(rd, subClient));
         });
       }
 
@@ -62,6 +63,7 @@ dbProvider
     });
   })
   .catch((err) => {
+    serverdebug(`DB Error: ${err}`);
     reject(err);
   });
 
