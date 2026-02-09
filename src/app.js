@@ -22,14 +22,13 @@ export default (db) => {
 
   var app = new express();
 
-  app.set('view engine', 'html');
   app.set('views', path.join(__dirname, 'views'));
+  app.set('view engine', 'html');
   app.engine('html', render);
   app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
   if (app.get('env') === 'development') {
     app.use(logger('dev'));
   }
-  app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cookieParser());
@@ -56,7 +55,7 @@ export default (db) => {
           // development error handler
           // will print stacktrace
           if (app.get('env') === 'development') {
-            app.use(function (err, _req, res, next) {
+            app.use(function (err, _req, res, _next) {
               res.status(err.status || 500);
               res.render('error', {
                 message: err.message,
@@ -67,7 +66,7 @@ export default (db) => {
 
           // production error handler
           // no stacktraces leaked to user
-          app.use(function (err, _req, res, next) {
+          app.use(function (err, _req, res, _next) {
             res.status(err.status || 500);
             res.render('error', {
               message: err.message,
