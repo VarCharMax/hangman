@@ -20,16 +20,15 @@ The main things I have done:
   - Bluebird. (Promisify library no longer needed - all new 3rd-party libraries are async.)
   - Istanbul. (Replaced by nyc.)
   - Mockgoose. (Replaced by mongodb-memory-server.)
-  - Phantomjs.
-- implemented all services asynchronously.
+  - Phantomjs. (Puppeteer.)
+  - Fixed a number of outright mistakes in the code base and improved the interface experience.
+  - implemented all services asynchronously.
 
-The latter requirement wasn't in the original book to a great extent, but I tend to think all services should be async by default. Anyway, don't say I'm not up for a challenge.
-
-It isn't completely functional just yet, but compiles and will run.
+The latter requirement wasn't in the original book to a great extent, but I tend to think all services should be async by default. One or two of the services didn't really need to be implemented with callbacks, but I like the coding style, and it makes it more uniform. Anyway, don't say I'm not up for a challenge.
 
 Main issues:
 
-- Have just discovered that the redis-mock library is not asynchronous, which is why methods like `getTopPlayers()` have been crashing in dev. I'll have to try to rig up async method mocks.
+- Have just discovered that the redis-mock library is not asynchronous, which is why methods like `getTopPlayers()` have been crashing in dev. I had to write a wrapper for it to rig up async method mocks.
 - There was a problem with the tests, due to ESM not working well with mocks using await (see above):
   `Failed to run Mocha due to error message: "require() cannot be used on an ESM graph with top-level await.`
   The problem is I'm not the one using `require()`, so I couldn't address the problem directly. `await` is being used quite reasonably in the `mongoose` mock code. I've worked around this by making both the live and mock implementations return the same Promise.
