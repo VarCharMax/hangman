@@ -5,12 +5,12 @@ import express from 'express';
 import favicon from 'serve-favicon';
 import { fileURLToPath } from 'url';
 import gameService from './services/games.js';
-import games from './routes/games.js';
+import gamesRoute from './routes/games.js';
+import homeRoute from './routes/index.js';
 import logger from 'morgan';
 import path from 'path';
-import profile from './routes/profile.js';
+import profileRoute from './routes/profile.js';
 import render from 'hogan-express';
-import routes from './routes/index.js';
 import userService from './services/users.js';
 import users from './middleware/users.js';
 
@@ -39,9 +39,9 @@ export default (db) => {
       userService
         .then((us) => {
           app.use(users(us));
-          app.use('/', routes(gs, us));
-          app.use('/games', games(gs, us));
-          app.use('/profiles', profile(us));
+          app.use('/', homeRoute(gs, us));
+          app.use('/games', gamesRoute(gs, us));
+          app.use('/profiles', profileRoute(us));
 
           // catch 404 and forward to error handler
           app.use(function (req, res, next) {

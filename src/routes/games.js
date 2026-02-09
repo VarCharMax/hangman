@@ -1,9 +1,9 @@
 import express from 'express';
 
 export default (gameService, usersService) => {
-  const routes = express.Router();
+  const router = express.Router();
 
-  routes.post('/', function (req, res, next) {
+  router.post('/', function (req, res, next) {
     const word = req.body.word;
     if (word && /^[A-Za-z]{3,}$/.test(word)) {
       gameService
@@ -17,7 +17,7 @@ export default (gameService, usersService) => {
     }
   });
 
-  routes.get('/:id', function (req, res, next) {
+  router.get('/:id', function (req, res, next) {
     checkGameExists(
       req.params.id,
       res,
@@ -30,7 +30,7 @@ export default (gameService, usersService) => {
     );
   });
 
-  routes.post('/:id/guesses', function (req, res, next) {
+  router.post('/:id/guesses', function (req, res, next) {
     checkGameExists(
       req.params.id,
       res,
@@ -46,7 +46,7 @@ export default (gameService, usersService) => {
     );
   });
 
-  routes.delete('/:id', function (req, res, next) {
+  router.delete('/:id', function (req, res, next) {
     checkGameExists(
       req.params.id,
       res,
@@ -64,7 +64,7 @@ export default (gameService, usersService) => {
     );
   });
 
-  routes.get('/:id/created', function (req, res, _next) {
+  router.get('/:id/created', function (req, res, _next) {
     checkGameExists(req.params.id, res, (game) => {
       res.render('createdGame', { id: game.id, word: game.word });
     });
@@ -83,5 +83,5 @@ export default (gameService, usersService) => {
       .catch(onError);
   };
 
-  return routes;
+  return router;
 };

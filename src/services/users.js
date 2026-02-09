@@ -44,5 +44,3 @@ export default redisClient
   .catch((err) => {
     reject(`Redis error: ${err.code} - ${err.message}`);
   });
-
-export { userService };
