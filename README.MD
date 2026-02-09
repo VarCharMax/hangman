@@ -36,4 +36,5 @@ Main issues:
 
 ## TODO
 
+- Tests need to be rewritten to cope with recent code changes.
 - DB implementation isn't fully DI - I'm calling library-specific methods in native code. Methods should be wrapped in order to isolate database implementation from calling code.
