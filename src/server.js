@@ -2,7 +2,7 @@ import { Server as Socket } from 'socket.io';
 import application from './app.js';
 import cookieParser from 'cookie-parser';
 import createChatClient from './realtime/chat.js';
-import createRealTimeServer from './realtime/games.js';
+import createGameServer from './realtime/games.js';
 import dbProvider from './config/mongoose.js';
 import debug from 'debug';
 import gameService from './services/games.js';
@@ -31,6 +31,7 @@ dbProvider
 
       let io = new Socket(server);
 
+      // Create federated io server using Redis.
       if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
         redisClient.then(async (rd) => {
           const subClient = rd.duplicate();
@@ -39,6 +40,7 @@ dbProvider
         });
       }
 
+      // Wire up Socket to existing middlware.
       io.use(adapt(cookieParser()));
 
       userService
@@ -49,11 +51,13 @@ dbProvider
           reject(err);
         });
 
+      // Create users chat client.
       createChatClient(io);
 
+      // Create game communication service.
       gameService(db)
         .then((gs) => {
-          createRealTimeServer(io, gs);
+          createGameServer(io, gs);
         })
         .catch((err) => {
           reject(err);
