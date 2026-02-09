@@ -2,17 +2,17 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import debug from 'debug';
 import express from 'express';
-import render from 'hogan-express';
-import logger from 'morgan';
-import path from 'path';
 import favicon from 'serve-favicon';
 import { fileURLToPath } from 'url';
-import users from './middleware/users.js';
-import games from './routes/games.js';
-import routes from './routes/index.js';
-import profile from './routes/profile.js';
 import gameService from './services/games.js';
+import games from './routes/games.js';
+import logger from 'morgan';
+import path from 'path';
+import profile from './routes/profile.js';
+import render from 'hogan-express';
+import routes from './routes/index.js';
 import userService from './services/users.js';
+import users from './middleware/users.js';
 
 export default (db) => {
   const { promise, resolve, reject } = Promise.withResolvers();
@@ -45,7 +45,7 @@ export default (db) => {
           app.use('/profiles', profile(us));
 
           // catch 404 and forward to error handler
-          app.use(function (_req, _res, next) {
+          app.use(function (req, res, next) {
             var err = new Error('Not Found');
             err.status = 404;
             next(err);

@@ -12,68 +12,56 @@ import redisClient from './config/redis.js';
 import userService from './services/users.js';
 import users from './middleware/users.js';
 
-const serverdebug = debug('hangman:db');
 const { promise, resolve, reject } = Promise.withResolvers();
 
-// let server;
+let server;
 
 dbProvider
   .then((db) => {
-    serverdebug('Server starting ...');
+    application(db).then((app) => {
+      server = http.createServer(app);
 
-    application(db)
-      .then((app) => {
-        let server = http.createServer(app);
+      server.on('close', () => {
+        redisClient.then((rd) => {
+          rd.destroy();
+        });
+        db.disconnect();
+      });
 
-        server.on('close', () => {
-          redisClient.then((rd) => {
-            rd.destroy();
-          });
-          db.disconnect();
+      let io = new Socket(server);
+
+      io.use(adapt(cookieParser()));
+
+      userService
+        .then((us) => {
+          io.use(adapt(users(us)));
+        })
+        .catch((err) => {
+          reject(err);
         });
 
-        // Chat connectivity.
-        let io = new Socket(server);
+      gameService(db)
+        .then((gs) => {
+          createRealTimeServer(io, gs);
+        })
+        .catch((err) => {
+          reject(err);
+        });
 
-        io.use(adapt(cookieParser()));
+      createChatClient(io);
 
-        userService
-          .then((us) => {
-            io.use(adapt(users(us)));
-          })
-          .catch((err) => {
-            reject(err);
-          });
+      if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
+        redisClient.then((rd) => {
+          const subClient = rd.duplicate();
+          subClient.connect();
+          io.adapter(redisAdapter(redisClient, subClient));
+        });
+      }
 
-        gameService(db)
-          .then((gs) => {
-            createRealTimeServer(io, gs);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-
-        createChatClient(io);
-
-        // Federated io via redis server.
-        // Don't configure redis federation in test scenarios.
-        if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-          if (redisClient) {
-            const subClient = redisClient.duplicate();
-            subClient.connect();
-            io.adapter(redisAdapter(redisClient, subClient));
-          }
-        }
-
-        resolve(server);
-      })
-      .catch((err) => {
-        serverdebug(`Application error: ${err}`);
-        reject(err);
-      });
+      resolve(server);
+    });
   })
   .catch((err) => {
-    serverdebug(`DB error: ${err}`);
     reject(err);
   });
 

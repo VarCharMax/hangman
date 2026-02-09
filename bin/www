@@ -1,9 +1,8 @@
 import debug from 'debug';
 import server from '../src/server.js';
 
-const serverdebug = debug('hangman:server');
-
 var port = normalizePort(process.env.PORT || '3000');
+const serverdebug = debug('hangman:server');
 
 server
   .then((s) => {
