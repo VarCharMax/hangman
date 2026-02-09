@@ -41,7 +41,7 @@ export default (db) => {
           app.use(usersMW(us));
           app.use('/', homeRoute(gs, us));
           app.use('/games', gamesRoute(gs, us));
-          app.use('/profiles', profileRoute(us));
+          app.use('/profile', profileRoute(us));
 
           // catch 404 and forward to error handler
           app.use(function (req, res, next) {

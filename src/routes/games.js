@@ -17,6 +17,10 @@ export default (gameService, usersService) => {
     }
   });
 
+  router.get('/', function (req, res, next) {
+    res.redirect('/');
+  });
+
   router.get('/:id', function (req, res, next) {
     checkGameExists(
       req.params.id,
