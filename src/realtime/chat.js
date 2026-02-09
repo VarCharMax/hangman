@@ -12,16 +12,16 @@ export default (io) => {
     socket.on('joinRoom', (room) => {
       socket.join(room);
 
-      if (user) {
+      if (username) {
         socket.broadcast.to.room(room).emit('chatMessage', {
-          username: user.name,
+          username: username,
           message: 'has arrived',
           type: 'action',
         });
       }
 
       socket.on('chatMessage', (message) => {
-        if (!user) {
+        if (!username) {
           socket.emit('chatMessage', {
             message: 'Please choose a username',
             type: 'warning',
@@ -35,9 +35,9 @@ export default (io) => {
       });
 
       socket.on('disconnect', () => {
-        if (user) {
+        if (username) {
           socket.broadcast.to(room).emit('chatMessage', {
-            username: user.name,
+            username: username,
             message: 'has left',
             type: 'action',
           });
