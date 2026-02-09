@@ -28,7 +28,7 @@ export default (io) => {
           });
         } else {
           namespace.to.room(room).emit('chatMessage', {
-            username: user.name,
+            username: username,
             message: message,
           });
         }

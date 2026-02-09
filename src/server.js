@@ -31,6 +31,14 @@ dbProvider
 
       let io = new Socket(server);
 
+      if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
+        redisClient.then(async (rd) => {
+          const subClient = rd.duplicate();
+          await subClient.connect();
+          io.adapter(redisAdapter(rd, subClient));
+        });
+      }
+
       io.use(adapt(cookieParser()));
 
       userService
@@ -41,6 +49,8 @@ dbProvider
           reject(err);
         });
 
+      createChatClient(io);
+
       gameService(db)
         .then((gs) => {
           createRealTimeServer(io, gs);
@@ -48,16 +58,6 @@ dbProvider
         .catch((err) => {
           reject(err);
         });
-
-      createChatClient(io);
-
-      if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-        redisClient.then(async (rd) => {
-          const subClient = rd.duplicate();
-          await subClient.connect();
-          io.adapter(redisAdapter(rd, subClient));
-        });
-      }
 
       resolve(server);
     });

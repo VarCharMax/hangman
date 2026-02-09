@@ -19,12 +19,13 @@
       <input type="text" name="name" id="name" value="{{username}}" />
       <input type="submit" />
     </form>
-    {{#userid}}
+    {{#userId}}
     <h2>Games</h2>
     <form action="/games" method="POST" id="createGame">
       <input type="text" name="word" id="word" placeholder="Enter a word to guess..." />
       <input type="submit" />
     </form>
+    {{/userId}}
     <h3>Games created by you</h3>
     <ul id="createdGames">
       {{#createdGames}} {{> createdGame}} {{/createdGames}}
@@ -35,7 +36,6 @@
       <li id="{{id}}"><a href="/games/{{id}}">{{id}}</a></li>
       {{/availableGames}}
     </ul>
-    {{/userid}}
     <h2>Top players</h2>
     <ol>
       {{#topPlayers}}

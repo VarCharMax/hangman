@@ -34,13 +34,13 @@ export default async function (mongoose) {
 
   //Closure
   let gs_methods = {
-    create: async (userId, word) => {
+    create: (userId, word) => {
       let game = new Game({ setBy: userId, word: word.toUpperCase() });
       return game.save();
     },
-    get: async (id) => Game.findById(id),
-    createdBy: async (userId) => Game.find({ setBy: userId }),
-    availableTo: async (userId) => Game.find({ setBy: { $ne: userId } }),
+    get: (id) => Game.findById(id),
+    createdBy: (userId) => Game.find({ setBy: userId }),
+    availableTo: (userId) => Game.find({ setBy: { $ne: userId } }),
     events: emitter,
   };
 
