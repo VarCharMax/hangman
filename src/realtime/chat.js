@@ -3,6 +3,11 @@ export default (io) => {
 
   namespace.on('connection', (socket) => {
     const user = socket.request.user;
+    let username;
+
+    if (user && user.name) {
+      username = user.name;
+    }
 
     socket.on('joinRoom', (room) => {
       socket.join(room);
