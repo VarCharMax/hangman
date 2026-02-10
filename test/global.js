@@ -5,9 +5,9 @@ import mongoose, { devServer } from '../src/config/mongoose.js';
 import redisClient from '../src/config/redis.js';
 
 before(function () {
-  //redisClient.then((rd) => {
-  // rd.flushdb().then(done);
-  //});
+  redisClient.then((rd) => {
+    rd.flushDb().then(done);
+  });
 });
 
 after(function (done) {
