@@ -40,7 +40,7 @@ describe('/games', () => {
 
     g_service
       .availableTo('non-existent-user') // return all games.
-      .then((games) => games.map((game) => game.deleteOne())) // An array of Promises of delete operations.
+      .then((games) => games.map((game) => g_service.delete(game))) // An array of Promises of delete operations.
       .then((gamesRemoved) => Promise.all(gamesRemoved)) // Perform all delete operations.
       .then(() => done(), done);
   });
