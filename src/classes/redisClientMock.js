@@ -40,7 +40,7 @@ export class redisClientMock extends EventEmitter {
   }
   mGet(ids) {
     return new Promise((resolve, reject) => {
-      let returnVal = this.#redisClientTmp.met(ids);
+      let returnVal = this.#redisClientTmp.mget(ids);
       resolve(returnVal);
     });
   }

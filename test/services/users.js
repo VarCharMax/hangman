@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import service from '../../src/services/users.js';
+import userService from '../../src/services/users.js';
 
 let u_service;
 
 before((done) => {
-  service.then((us) => {
+  userService.then((us) => {
     u_service = us;
     done();
   });
@@ -46,9 +46,9 @@ describe('User service', function () {
     before(function (done) {
       let setup = [];
       for (let i = 0; i < users.length; ++i) {
-        setup.push(service.setUsername(users[i].userId, users[i].name));
+        setup.push(u_service.setUserName(users[i].userId, users[i].name));
         for (let j = 0; j <= i; ++j) {
-          setup.push(service.recordWin(users[i].userId));
+          setup.push(u_service.recordWin(users[i].userId));
         }
       }
 
@@ -56,7 +56,7 @@ describe('User service', function () {
     });
 
     it('should provide the top scoring players along with number of wins', function (done) {
-      service
+      u_service
         .getTopPlayers()
         .then((topPlayers) => {
           expect(topPlayers[0]).to.eql({ userId: 'user5', name: 'Five', wins: 5 });
@@ -67,7 +67,7 @@ describe('User service', function () {
     });
 
     it('should provide the rank and score for a player with wins', function (done) {
-      service
+      u_service
         .getRanking('user4')
         .then((result) => {
           expect(result.rank).to.equal(2);
@@ -77,7 +77,7 @@ describe('User service', function () {
     });
 
     it('should provide the rank and score for a player with no wins', function (done) {
-      service
+      u_service
         .getRanking('other')
         .then((result) => {
           expect(result).to.be.null;
