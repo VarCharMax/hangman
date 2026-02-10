@@ -9,7 +9,7 @@ export default redisClient
       setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
       recordWin: (userId) => redis.zIncrBy('user:wins', 1, userId),
       getTopPlayers: () =>
-        redis.zRange('user:wins', 0, 2, 'rev', 'withscores').then((interleaved) => {
+        redis.zRangeWithScores('user:wins', 0, 2, 'rev').then((interleaved) => {
           if (interleaved.length === 0) {
             return [];
           }
@@ -19,8 +19,8 @@ export default redisClient
           return redis.mGet(userIds).then((names) =>
             names.map((username, index) => ({
               name: username,
-              userId: interleaved[index * 2],
-              wins: parseInt(interleaved[index * 2 + 1]),
+              userId: interleaved[index * 2].value,
+              wins: parseInt(interleaved[index * 2].score),
             }))
           );
         }),
