@@ -14,6 +14,7 @@ export default redisClient
             REV: true,
           })
           .then((interleaved) => {
+            //[{value: 'one', score: 1}, {value: 'uno', score: 1}]
             if (interleaved.length === 0) {
               return [];
             }
