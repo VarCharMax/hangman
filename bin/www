@@ -4,10 +4,10 @@ import server from '../src/server.js';
 var port = normalizePort(process.env.PORT || '3000');
 const serverdebug = debug('hangman:server');
 
+serverdebug('Booting App ...');
+
 server
   .then((s) => {
-    serverdebug('booting App ...');
-
     s.listen(port);
     s.on('error', onError);
     s.on('listening', onListening.bind(s));
