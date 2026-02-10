@@ -1,11 +1,12 @@
 'use strict';
 
+import { expect } from 'chai';
 import http from 'http';
 import { Server as Socket } from 'socket.io';
+import createClient from 'socket.io-client';
 import createChatServer from '../../src/realtime/chat.js';
 
 describe('chat', function () {
-  const expect = require('chai').expect;
   let server,
     io,
     url,
@@ -131,7 +132,6 @@ describe('chat', function () {
     sendMessage(0);
   });
 
-  const createClient = require('socket.io-client');
   createUser = (name, room) => {
     let headers = {};
     if (name) {
