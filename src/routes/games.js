@@ -41,6 +41,7 @@ export default (gameService, usersService) => {
       (game) => {
         if (req.user && game.matches(req.body.word)) {
           usersService.recordWin(req.user.id);
+          gameService.recordWinner(game.id, req.user.id);
         }
         res.send({
           positions: game.positionsOf(req.body.letter),

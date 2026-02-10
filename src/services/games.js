@@ -2,7 +2,7 @@
 
 const emitter = new EventEmitter();
 
-export default async function (mongoose) {
+export default function (mongoose) {
   let Game = mongoose.models['Game'];
 
   if (!Game) {
@@ -10,6 +10,7 @@ export default async function (mongoose) {
     const gameSchema = new Schema({
       word: String,
       setBy: String,
+      solvedBy: [String],
     });
 
     gameSchema.methods.positionsOf = function (character) {
@@ -38,9 +39,19 @@ export default async function (mongoose) {
       let game = new Game({ setBy: userId, word: word.toUpperCase() });
       return game.save();
     },
+    recordWinner: async (gameId, userId) => {
+      const filter = { _id: gameId };
+      const updateDoc = {
+        $push: {
+          solvedBy: userId,
+        },
+      };
+      await Game.updateOne(filter, updateDoc);
+    },
     get: (id) => Game.findById(id),
     createdBy: (userId) => Game.find({ setBy: userId }),
-    availableTo: (userId) => Game.find({ setBy: { $ne: userId } }),
+    availableTo: (userId) =>
+      Game.find({ setBy: { $ne: userId }, solvedBy: { $nin: [userId] } }),
     events: emitter,
   };
 
@@ -53,5 +64,5 @@ export default async function (mongoose) {
 }
 
 const events = emitter;
-// const gameService = gs_methods;
+
 export { events };
