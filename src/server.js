@@ -7,7 +7,7 @@ import application from './app.js';
 import dbProvider from './config/mongoose.js';
 import redisClient from './config/redis.js';
 import usersMW from './middleware/users.js';
-import createChatClient from './realtime/chat.js';
+import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
 import gameService from './services/games.js';
 import userService from './services/users.js';
@@ -45,7 +45,7 @@ dbProvider
         });
 
       // Create users chat client.
-      createChatClient(io);
+      createChatServer(io);
 
       // Create game communication service.
       const gservice = gameService(db)
