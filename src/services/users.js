@@ -18,7 +18,6 @@ export default redisClient
             if (interleaved.length === 0) {
               return [];
             }
-            // Sort by score property.
             let userIds = interleaved.map((user) => `user:${user.value}:name`);
             return redis.mGet(userIds).then((names) =>
               names.map((username, index) => ({
