@@ -1,16 +1,16 @@
+import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
+import cookieParser from 'cookie-parser';
+import debug from 'debug';
+import http from 'http';
 import { Server as Socket } from 'socket.io';
 import application from './app.js';
-import cookieParser from 'cookie-parser';
+import dbProvider from './config/mongoose.js';
+import redisClient from './config/redis.js';
+import usersMW from './middleware/users.js';
 import createChatClient from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
-import dbProvider from './config/mongoose.js';
-import debug from 'debug';
 import gameService from './services/games.js';
-import http from 'http';
-import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
-import redisClient from './config/redis.js';
-import { default as userService } from './services/users.js';
-import usersMW from './middleware/users.js';
+import userService from './services/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
@@ -21,13 +21,6 @@ dbProvider
       serverdebug('Server starting ...');
 
       const server = http.createServer(app);
-
-      server.on('close', () => {
-        redisClient.then((rd) => {
-          rd.destroy();
-        });
-        db.disconnect();
-      });
 
       let io = new Socket(server);
 
@@ -55,13 +48,21 @@ dbProvider
       createChatClient(io);
 
       // Create game communication service.
-      gameService(db)
+      const gservice = gameService(db)
         .then((gs) => {
           createGameServer(io, gs);
         })
         .catch((err) => {
           reject(err);
         });
+
+      server.on('close', () => {
+        gservice.events.removeAllListeners();
+        redisClient.then((rd) => {
+          rd.destroy();
+        });
+        db.disconnect();
+      });
 
       resolve(server);
     });

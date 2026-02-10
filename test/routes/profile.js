@@ -11,7 +11,7 @@ import userService from '../../src/services/users.js';
 const userId = 'test-user-id';
 
 describe('/profile', function () {
-  let agent, app;
+  let agent, app, uService;
 
   before(() => {
     app = express();
@@ -22,6 +22,7 @@ describe('/profile', function () {
     });
 
     userService.then((us) => {
+      uService = us;
       app.use('/profile', profile(us));
     });
   });
@@ -41,7 +42,7 @@ describe('/profile', function () {
           if (error) {
             done(error);
           } else {
-            userService
+            uService
               .getUserName(userId)
               .then((setName) => {
                 expect(setName).to.equal('User Name');
