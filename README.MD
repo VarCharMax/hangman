@@ -11,7 +11,7 @@ A few hurdles:
 - I'm not sure that converting the codebase to ESM was such a great idea.
   - Despite being available for 10 years, ESM still isn't widely used in Node.js projects. It took me a while to realise this, and I had been wondering why all code examples I saw on NPM were in CommonJS syntax. So it was bit bit of an adventure, and it tuned out there was one gotcha related to this issue (see below).
   - The only real advantage to ESM I can see, apart from a slightly cooler syntax, is that it can load modules asynchronously. But CommonJS has other advantages - it can conditionally include, and include and instantiate in the one call.
-- Node.js probably wouldn't be the ideal choice for this kind of application now.
+- Node.js probably wouldn't be the ideal choice for this kind of application now. Despite a lot of work, the interface is relatively poor, and it isn't very robust in terms of logging in and out. I'm find it hard to understand how the user gets saved and restored, especially between browsers and domains. It's also wired up with a lot of jQuery, which is a fairly old approach now.
 
 The main things I have done:
 
