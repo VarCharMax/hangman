@@ -9,3 +9,6 @@ START /B npm start
 timeout /T 1 > NUL
 set PORT=3001
 START /B npm start
+timeout /T 1 > NUL
+set PORT=3002
+START /B npm start

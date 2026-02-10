@@ -11,7 +11,10 @@ $(function () {
 
   var guessedLetters = [];
   var guessLetter = function (letter) {
-    $.post('guesses', { letter: letter }).done(function (data) {
+    $.post('guesses', {
+      letter: letter,
+      word: word.find('span').text().replace(/_/g, letter),
+    }).done(function (data) {
       if (data.positions.length) {
         data.positions.forEach(function (position) {
           word.find('span').eq(position).text(letter);
