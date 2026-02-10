@@ -58,7 +58,7 @@ export class redisClientMock extends EventEmitter {
   }
   flushDb() {
     return new Promise((resolve, reject) => {
-      let returnVal = this.#redisClientTmp.flushDb();
+      let returnVal = this.#redisClientTmp.flushdb();
       resolve(returnVal);
     });
   }
