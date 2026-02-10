@@ -57,8 +57,8 @@ export default (gameService, usersService) => {
       res,
       (game) => {
         if (game.setBy === req.user.id) {
-          game
-            .deleteOne()
+          gameService
+            .delete(game)
             .then(() => res.send())
             .catch(next);
         } else {

@@ -1,4 +1,5 @@
 ﻿import EventEmitter from 'events';
+import { ObjectId } from 'mongodb';
 
 const emitter = new EventEmitter();
 
@@ -28,7 +29,9 @@ export default function (mongoose) {
     };
 
     gameSchema.post('save', (game) => emitter.emit('gameSaved', game));
-    gameSchema.post('deleteOne', (game) => emitter.emit('gameRemoved', game));
+    gameSchema.post('findOneAndDelete', (game) =>
+      emitter.emit('gameRemoved', { id: game._doc['_id'].toString() })
+    );
 
     Game = mongoose.model('Game', gameSchema);
   }
@@ -38,6 +41,9 @@ export default function (mongoose) {
     create: (userId, word) => {
       let game = new Game({ setBy: userId, word: word.toUpperCase() });
       return game.save();
+    },
+    delete: async (game) => {
+      return Game.findOneAndDelete({ _id: new ObjectId(game._id) });
     },
     recordWinner: async (gameId, userId) => {
       const filter = { _id: gameId };
