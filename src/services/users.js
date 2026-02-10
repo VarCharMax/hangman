@@ -17,15 +17,15 @@ export default redisClient
           return redis.mGet(userIds).then((names) =>
             names.map((username, index) => ({
               name: username,
-              userId: interleaved[index * 2].value,
-              wins: parseInt(interleaved[index * 2].score),
+              userId: interleaved[index].value,
+              wins: parseInt(interleaved[index].score),
             }))
           );
         }),
       getRanking: (userId) => {
-        Promise.all([
+        return Promise.all([
           redis.zRevRank('user:wins', userId),
-          redis.zScore('user:wins', userId, userId),
+          redis.zScore('user:wins', userId),
         ]).then(([rank, score]) => {
           if (rank == null) {
             return null;
