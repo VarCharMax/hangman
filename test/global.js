@@ -2,12 +2,18 @@
 
 import mongoose, { devServer } from '../src/config/mongoose.js';
 
+import redisClient from '../src/config/redis.js';
+
 before(function () {
-  // redisClient.flushdbAsync().then(done);
+  //redisClient.then((rd) => {
+  // rd.flushdb().then(done);
+  //});
 });
 
 after(function (done) {
-  // redisClient.quit();
+  redisClient.then((rd) => {
+    rd.destroy();
+  });
 
   mongoose.then((mongoose) => {
     mongoose.disconnect();

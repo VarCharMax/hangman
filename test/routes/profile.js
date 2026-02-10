@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 'use strict';
 
 import bodyParser from 'body-parser';
