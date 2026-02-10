@@ -28,7 +28,7 @@ export default function (mongoose) {
     };
 
     gameSchema.post('save', (game) => emitter.emit('gameSaved', game));
-    gameSchema.post('remove', (game) => emitter.emit('gameRemoved', game));
+    gameSchema.post('deleteOne', (game) => emitter.emit('gameRemoved', game));
 
     Game = mongoose.model('Game', gameSchema);
   }

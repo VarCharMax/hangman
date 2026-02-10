@@ -22,7 +22,7 @@ export default redisClient
             }))
           );
         }),
-      getRanking: (userId) => {
+      getRanking: async (userId) => {
         return Promise.all([
           redis.zRevRank('user:wins', userId),
           redis.zScore('user:wins', userId),
