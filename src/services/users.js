@@ -13,9 +13,7 @@ export default redisClient
           if (interleaved.length === 0) {
             return [];
           }
-          let userIds = interleaved
-            .filter((_user, index) => index % 2 === 0)
-            .map((userId) => `user:${userId}:name`);
+          let userIds = interleaved.map((user) => `user:${user.value}:name`);
           return redis.mGet(userIds).then((names) =>
             names.map((username, index) => ({
               name: username,
