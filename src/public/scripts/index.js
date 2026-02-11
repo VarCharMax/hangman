@@ -19,7 +19,7 @@ $(function () {
     event.preventDefault();
   });
 
-  var socket = io('/games');
+  var socket = io('/games'); //Namespace
   var availableGames = $('#availableGames');
 
   socket.on('gameSaved', function (game) {

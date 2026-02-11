@@ -1,13 +1,14 @@
 /* eslint-disable no-undef */
-'use strict';
 
+import { Server as Socket } from 'socket.io';
+import createChatServer from '../../src/realtime/chat.js';
+import createClient from 'socket.io-client';
 import { expect } from 'chai';
 import http from 'http';
-import { Server as Socket } from 'socket.io';
-import createClient from 'socket.io-client';
-import createChatServer from '../../src/realtime/chat.js';
 
 describe('chat', function () {
+  this.timeout(5000);
+
   let server,
     io,
     url,
@@ -22,9 +23,9 @@ describe('chat', function () {
         done(err);
       } else {
         const addr = server.address();
-        url = 'http://localhost:' + addr.port + '/chat';
+        url = 'http://127.0.0.1:' + addr.port + '/chat';
 
-        io = Socket(server);
+        io = new Socket(server);
         io.use((socket, next) => {
           socket.request.user = {
             name: socket.request.headers.username,
@@ -32,7 +33,6 @@ describe('chat', function () {
           next();
         });
         createChatServer(io);
-
         done();
       }
     });
@@ -45,8 +45,13 @@ describe('chat', function () {
 
   it('warns unnamed users to choose a username', (done) => {
     const unnamedUser = createUser(null, 'Room1');
+
+    // Unnamed user sending a message should generate a not-logged in response
+    // from the server.
     unnamedUser.client.emit('chatMessage', 'Hello!');
+
     unnamedUser.client.on('chatMessage', (data) => {
+      console.log(`Test call back: ${data.message}`);
       expect(data.message).to.contain('choose a username');
       expect(data.username).to.be.undefined;
       expect(data.type).to.equal('warning');
@@ -55,9 +60,13 @@ describe('chat', function () {
   });
 
   it('broadcasts arrival of named users', (done) => {
-    const connectedUser = createUser(null, 'Room1');
-    const newUser = createUser('User1', 'Room1');
+    const connectedUser = createUser();
+    const newUser = createUser('User1');
+
+    //connectedUser should receive a message about newUser joining.
+
     connectedUser.client.on('chatMessage', (data) => {
+      console.log(`Test call back: ${data.message}`);
       expect(data.message).to.contain('arrived');
       expect(data.username).to.equal(newUser.name);
       expect(data.type).to.equal('action');
@@ -69,6 +78,9 @@ describe('chat', function () {
     let connectedUser = createUser(null, 'Room1');
     let newUser = createUser('User1', 'Room1');
     let left = false;
+
+    // newUser leaving should broadcast message to connectedUser.
+
     connectedUser.client.on('chatMessage', (data) => {
       if (!left) {
         newUser.client.disconnect();
@@ -85,6 +97,7 @@ describe('chat', function () {
   it('emits messages from named users back to all users', (done) => {
     const namedUser = createUser('User1', 'Room1');
     const otherUser = createUser(null, 'Room1');
+
     const messageReceived = function (data) {
       if (!data.type) {
         // Ignore actions/warnings
@@ -99,8 +112,10 @@ describe('chat', function () {
         done();
       }
     };
+
     otherUser.client.on('chatMessage', messageReceived.bind(otherUser));
     namedUser.client.on('chatMessage', messageReceived.bind(namedUser));
+
     namedUser.client.emit('chatMessage', 'Hello!');
   });
 
@@ -133,6 +148,7 @@ describe('chat', function () {
     sendMessage(0);
   });
 
+  //Emulate browser IO client.
   createUser = (name, room) => {
     let headers = {};
     if (name) {
@@ -144,6 +160,8 @@ describe('chat', function () {
       client: createClient(url, { extraHeaders: headers }),
     };
     createdClients.push(user.client);
+
+    //This is same call as in browser script.
     user.client.emit('joinRoom', room);
 
     return user;

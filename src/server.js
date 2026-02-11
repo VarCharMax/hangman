@@ -1,16 +1,16 @@
-import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
-import cookieParser from 'cookie-parser';
-import debug from 'debug';
-import http from 'http';
 import { Server as Socket } from 'socket.io';
 import application from './app.js';
-import dbProvider from './config/mongoose.js';
-import redisClient from './config/redis.js';
-import usersMW from './middleware/users.js';
+import cookieParser from 'cookie-parser';
 import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
+import dbProvider from './config/mongoose.js';
+import debug from 'debug';
 import gameService from './services/games.js';
+import http from 'http';
+import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
+import redisClient from './config/redis.js';
 import userService from './services/users.js';
+import usersMW from './middleware/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
@@ -47,9 +47,11 @@ dbProvider
       // Create users chat client.
       createChatServer(io);
 
+      let gservice;
       // Create game communication service.
-      const gservice = gameService(db)
+      gameService(db)
         .then((gs) => {
+          gservice = gs;
           createGameServer(io, gs);
         })
         .catch((err) => {

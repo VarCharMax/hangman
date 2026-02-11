@@ -1,3 +1,4 @@
+//Relays game creation events under /games namespace.
 export default (io, service) => {
   io.of('/games').on('connection', (socket) => {
     forwardEvent('gameSaved', socket);
