@@ -47,11 +47,9 @@ dbProvider
       // Create users chat client.
       createChatServer(io);
 
-      let gservice;
       // Create game communication service.
       gameService(db)
         .then((gs) => {
-          gservice = gs;
           createGameServer(io, gs);
         })
         .catch((err) => {
@@ -59,7 +57,6 @@ dbProvider
         });
 
       server.on('close', () => {
-        gservice.events.removeAllListeners();
         redisClient.then((rd) => {
           rd.destroy();
         });

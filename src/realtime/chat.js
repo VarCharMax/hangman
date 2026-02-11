@@ -13,7 +13,7 @@ export default (io) => {
       socket.join(room);
 
       if (username) {
-        socket.broadcast.to(room).emit('chatMessage', {
+        socket.to(room).emit('chatMessage', {
           username: username,
           message: 'has arrived',
           type: 'action',
@@ -22,6 +22,7 @@ export default (io) => {
 
       socket.on('chatMessage', (message) => {
         if (!username) {
+          // broadcast property apparently no longer needed.
           socket.emit('chatMessage', {
             message: 'Please choose a username',
             type: 'warning',
@@ -36,7 +37,7 @@ export default (io) => {
 
       socket.on('disconnect', () => {
         if (username) {
-          socket.broadcast.to(room).emit('chatMessage', {
+          socket.to(room).emit('chatMessage', {
             username: username,
             message: 'has left',
             type: 'action',

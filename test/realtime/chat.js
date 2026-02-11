@@ -23,7 +23,7 @@ describe('chat', function () {
         done(err);
       } else {
         const addr = server.address();
-        url = 'http://127.0.0.1:' + addr.port + '/chat';
+        url = 'http://127.0.0.1:' + addr.port + '/chat'; // Add namespace to url.
 
         io = new Socket(server);
         io.use((socket, next) => {
@@ -40,7 +40,8 @@ describe('chat', function () {
 
   afterEach((done) => {
     createdClients.forEach((client) => client.disconnect());
-    server.close(done);
+    server.close();
+    done();
   });
 
   it('warns unnamed users to choose a username', (done) => {
@@ -60,11 +61,10 @@ describe('chat', function () {
   });
 
   it('broadcasts arrival of named users', (done) => {
-    const connectedUser = createUser();
-    const newUser = createUser('User1');
+    let connectedUser = createUser('User1', 'Room1');
+    let newUser = createUser('User2', 'Room1');
 
     //connectedUser should receive a message about newUser joining.
-
     connectedUser.client.on('chatMessage', (data) => {
       console.log(`Test call back: ${data.message}`);
       expect(data.message).to.contain('arrived');
@@ -161,7 +161,7 @@ describe('chat', function () {
     };
     createdClients.push(user.client);
 
-    //This is same call as in browser script.
+    //This is same init call as in browser script.
     user.client.emit('joinRoom', room);
 
     return user;
