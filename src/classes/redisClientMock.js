@@ -14,7 +14,7 @@ export class redisClientMock extends EventEmitter {
   connect() {
     this.emit('ready', () => {});
   }
-  zRangeWithScores(name, start, end, param1) {
+  zRangeWithScores(name, start, end, _param1) {
     return new Promise((resolve, reject) => {
       let returnVal = this.#redisClientTmp.zrange(name, start, end, 'REV', 'WITHSCORES');
       resolve(returnVal);
