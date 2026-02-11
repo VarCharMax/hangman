@@ -1,16 +1,18 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
+import factory from '../../src/middleware/users.js';
 import sinon from 'sinon';
-import middleware from '../../src/middleware/users.js';
 
 describe('Users middleware', () => {
   const defaultUserId = 'user-id-1';
-  let request, response;
+  let request, response, middleware, usersService;
 
   beforeEach(() => {
     request = { cookies: {} };
     response = { cookie: () => {} };
+    usersService = { getUsername: sinon.stub() };
+    middleware = factory(usersService);
   });
 
   it('if the user already signed in, reads their ID from a cookie and exposes the user on the request', () => {
