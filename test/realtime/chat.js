@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 
-import { Server as Socket } from 'socket.io';
-import createChatServer from '../../src/realtime/chat.js';
-import createClient from 'socket.io-client';
 import { expect } from 'chai';
 import http from 'http';
+import { Server as Socket } from 'socket.io';
+import createClient from 'socket.io-client';
+import createChatServer from '../../src/realtime/chat.js';
 
 describe('chat', function () {
   this.timeout(5000);
@@ -26,9 +26,11 @@ describe('chat', function () {
         url = 'http://127.0.0.1:' + addr.port + '/chat'; // Add namespace to url.
 
         io = new Socket(server);
-        io.use((socket, next) => {
-          socket.request.user = {
-            name: socket.request.headers.username,
+
+        io.engine.use((req, res, next) => {
+          console.log('In middleware ...');
+          req.user = {
+            name: req.headers.username,
           };
           next();
         });
