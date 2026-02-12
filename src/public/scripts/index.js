@@ -12,7 +12,7 @@ $(function () {
     var $this = $(this);
     $.ajax($this.attr('href'), {
       method: 'delete',
-    }).done(function (_val) {
+    }).done(function () {
       $this.closest('.game').remove();
     });
     event.preventDefault();
