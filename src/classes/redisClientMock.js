@@ -16,7 +16,18 @@ export class redisClientMock extends EventEmitter {
   }
   zRangeWithScores(name, start, end, _param1) {
     return new Promise((resolve, _reject) => {
-      let returnVal = this.#redisClientTmp.zrange(name, start, end, 'REV', 'WITHSCORES');
+      let returnVal = this.#redisClientTmp
+        .zrevrange(name, start, end, 'withscores') // translate ['user5', 5, 'user4', 4] into [{value: 'user5', score: 5}, {value: 'user4', score: 4}]
+        .reduce((accumulator, currentValue, index, sourceArray) => {
+          // Check if the current index is even
+          if (index % 2 === 0) {
+            accumulator.push({
+              value: currentValue,
+              score: sourceArray[index + 1],
+            });
+          }
+          return accumulator;
+        }, []);
       resolve(returnVal);
     });
   }
