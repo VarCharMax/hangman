@@ -27,6 +27,7 @@ describe('chat', function () {
 
         io = new Socket(server);
 
+        // Translate client extraHeader data into request user.name.
         io.engine.use((req, res, next) => {
           req.user = {
             name: req.headers.username,
