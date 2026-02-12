@@ -7,3 +7,7 @@ node_js:
 services:
   - mongodb
   - redis
+env:
+  global:
+    - MONGODB_URL=mongodb://localhost/hangman
+    - REDIS_URL=redis://localhost:6379/
