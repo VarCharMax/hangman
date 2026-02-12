@@ -4,8 +4,8 @@
 import bodyParser from 'body-parser';
 import { expect } from 'chai';
 import express from 'express';
-import request from 'supertest';
 import profile from '../../src/routes/profile.js';
+import request from 'supertest';
 import userService from '../../src/services/users.js';
 
 const userId = 'test-user-id';

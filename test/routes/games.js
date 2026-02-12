@@ -1,12 +1,12 @@
 /* eslint-disable no-undef */
 
 import bodyParser from 'body-parser';
+import dbase from '../../src/config/mongoose.js';
 import { expect } from 'chai';
 import express from 'express';
-import request from 'supertest';
-import dbase from '../../src/config/mongoose.js';
 import games from '../../src/routes/games.js';
 import gamesService from '../../src/services/games.js';
+import request from 'supertest';
 import usersService from '../../src/services/users.js';
 
 describe('/games', () => {

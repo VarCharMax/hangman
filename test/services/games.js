@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
-import { expect } from 'chai';
 import dbase from '../../src/config/mongoose.js';
+import { expect } from 'chai';
 import gservice from '../../src/services/games.js';
 
 describe('Game service', () => {

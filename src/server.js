@@ -56,11 +56,11 @@ dbProvider
           reject(err);
         });
 
-      server.on('close', () => {
-        redisClient.then((rd) => {
-          rd.destroy();
+      server.on('close', async () => {
+        redisClient.then(async (rd) => {
+          await rd.destroy();
         });
-        db.disconnect();
+        await db.disconnect();
       });
 
       resolve(server);
