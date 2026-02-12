@@ -71,8 +71,8 @@ describe('Game service', () => {
 
     it('should raise an event when removing a game', (done) => {
       service.create(firstUserId, 'testing');
-      service.events.on('gameSaved', async (game) => {
-        service.delete(game); // Event is firing, but not getting picked up here.
+      service.events.on('gameSaved', (game) => {
+        service.delete(game);
         service.events.on('gameRemoved', (gameRemoved) => {
           expect(gameRemoved.id).to.equal(game._doc['_id'].toString());
           done();
