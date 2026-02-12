@@ -1,19 +1,22 @@
 {
-	"folders": [{
-		"path": "."
-	}],
-	"settings": {
-		"cSpell.words": [
-			"flushdb",
-			"lcov",
-			"mget",
-			"mockgoose",
-			"mongodb",
-			"withscores",
-			"zincrby",
-			"zrevrange",
-			"zrevrank",
-			"zscore"
-		]
-	}
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "cSpell.words": [
+      "flushdb",
+      "lcov",
+      "mget",
+      "mockgoose",
+      "mongodb",
+      "withscores",
+      "zincrby",
+      "zrevrange",
+      "zrevrank",
+      "zscore",
+    ],
+    "postman.settings.dotenv-detection-notification-visibility": false,
+  },
 }

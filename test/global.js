@@ -6,7 +6,7 @@ import redisClient from '../src/config/redis.js';
 
 before(function () {
   redisClient.then((rd) => {
-    rd.flushDb().then(done);
+    rd.flushDb().then(() => done());
   });
 });
 
@@ -15,9 +15,15 @@ after(function (done) {
     rd.destroy();
   });
 
-  mongoose.then((mongoose) => {
-    mongoose.disconnect();
-    devServer.stop();
-    done();
-  });
+  mongoose
+    .then((mongoose) => {
+      mongoose.disconnect().then(() => {
+        devServer.stop().then(() => {
+          done();
+        });
+      });
+    })
+    .catch(() => {
+      done();
+    });
 });
