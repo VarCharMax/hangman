@@ -1,7 +1,7 @@
-import gulp, { series } from 'gulp';
+import gulp, { parallel, series } from 'gulp';
 
-import eslint from 'gulp-eslint-new';
 import globals from 'globals';
+import eslint from 'gulp-eslint-new';
 import run from 'gulp-run';
 
 const lint_server = () => {
@@ -112,6 +112,6 @@ const test = () => {
   ).exec();
 };
 
-const lint = series(lint_server, lint_client, lint_test);
+const lint = parallel(lint_server, lint_client, lint_test);
 
 export default series(lint, test);
