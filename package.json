@@ -4,7 +4,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "start": "cross-env node --trace-deprecation --trace-warnings ./bin/www",
+    "start": "node ./bin/www",
     "test": "cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js"
   },
   "nyc": {
