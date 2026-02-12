@@ -73,5 +73,10 @@ export class redisClientMock extends EventEmitter {
       resolve(returnVal);
     });
   }
-  destroy() {}
+  destroy() {
+    return new Promise((resolve, _reject) => {
+      let returnVal = this.#redisClientTmp.quit();
+      resolve(returnVal);
+    });
+  }
 }

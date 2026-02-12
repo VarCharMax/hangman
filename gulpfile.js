@@ -1,7 +1,7 @@
 import gulp, { parallel, series } from 'gulp';
 
-import globals from 'globals';
 import eslint from 'gulp-eslint-new';
+import globals from 'globals';
 import run from 'gulp-run';
 
 const lint_server = () => {

@@ -11,8 +11,8 @@ before(function () {
 });
 
 after(function (done) {
-  redisClient.then((rd) => {
-    rd.destroy();
+  redisClient.then(async (rd) => {
+    await rd.destroy();
   });
 
   mongoose

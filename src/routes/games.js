@@ -17,6 +17,7 @@ export default (gameService, usersService) => {
     }
   });
 
+   
   router.get('/', function (req, res, next) {
     res.redirect('/');
   });
@@ -69,7 +70,8 @@ export default (gameService, usersService) => {
     );
   });
 
-  router.get('/:id/created', function (req, res, _next) {
+   
+  router.get('/:id/created', function (req, res, next) {
     checkGameExists(req.params.id, res, (game) => {
       res.render('createdGame', { id: game.id, word: game.word });
     });
