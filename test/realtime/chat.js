@@ -27,14 +27,16 @@ describe('chat', function () {
 
         io = new Socket(server);
 
-        // Translate client extraHeader data into request user.name.
+        // Translate client extraHeaders data into request user.name.
         io.engine.use((req, res, next) => {
           req.user = {
             name: req.headers.username,
           };
           next();
         });
+
         createChatServer(io);
+
         done();
       }
     });
@@ -159,8 +161,9 @@ describe('chat', function () {
 
     let user = {
       name: name,
-      client: createClient(url, { extraHeaders: headers }),
+      client: createClient(url, { extraHeaders: headers }), //middleware will convert this into user.name request object.
     };
+
     createdClients.push(user.client);
 
     //This is same init call as in browser script.
