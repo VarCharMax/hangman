@@ -1,6 +1,16 @@
 # Hangman
 
-Classic Hangman game implemented in Node.js, Express front-end, MongoDB backend, Redis real-time scoring, Socket IO, Mocha unit tests.
+Classic Hangman game implemented in Node.js
+
+- Express mvc front-end.
+- MongoDB backend.
+- Redis real-time scoring.
+- Chat server using Socket.IO
+- Federated chat using Redis pub/sub.
+- Linting via ESLint.
+- Mocha unit tests.
+- Coverage via nyc.
+- Gulp test runner.
 
 Based on code from a fairly old Node.js book by Harry Cummings.
 

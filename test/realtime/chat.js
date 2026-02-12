@@ -28,7 +28,6 @@ describe('chat', function () {
         io = new Socket(server);
 
         io.engine.use((req, res, next) => {
-          console.log('In middleware ...');
           req.user = {
             name: req.headers.username,
           };
