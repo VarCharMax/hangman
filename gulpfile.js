@@ -120,11 +120,11 @@ const integration_test = (done) => {
         .src('integration-test/**/*.js', { read: false })
         .pipe(
           mocha().on('end', () => {
+            server.close();
             done();
           })
         )
         .on('error', (error) => server.close(() => done(error)))
-        .on('end', () => server.close(done))
         .pipe(exit());
     });
   });
