@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-import mongoose, { devServer } from '../src/config/mongoose.js';
+import mongoose, { mongod } from '../src/config/mongoose.js';
 
 import redisClient from '../src/config/redis.js';
 
@@ -16,9 +16,9 @@ after(function (done) {
   });
 
   mongoose
-    .then((mongoose) => {
-      mongoose.disconnect().then(() => {
-        devServer.stop().then(() => {});
+    .then((db) => {
+      db.disconnect().then(() => {
+        mongod.stop().then(() => {});
       });
       done();
     })

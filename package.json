@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "cross-env REDIS_URL=redis://default@127.0.0.1:6379 MONGODB_URL=mongodb://10.211.55.2/hangman DEBUG='hangman:server' node --trace-deprecation --trace-warnings ./bin/www",
-    "test": "cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js"
+    "test": "cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --colors test/**/*.js"
   },
   "nyc": {
     "require": [],
@@ -43,12 +43,14 @@
     "gulp": "^5.0.1",
     "gulp-env": "^0.4.0",
     "gulp-eslint-new": "^2.5.0",
+    "gulp-exit": "^0.0.2",
     "gulp-mocha": "^10.0.1",
     "gulp-run": "^1.7.1",
     "gulp-shell": "^0.8.0",
     "mocha": "^11.7.5",
     "mongodb-memory-server": "^11.0.1",
     "nyc": "^17.1.0",
+    "puppeteer": "^24.37.3",
     "redis-js": "^0.1.2",
     "sinon": "^21.0.1",
     "sinon-chai": "^4.0.1",

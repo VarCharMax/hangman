@@ -11,7 +11,7 @@ export default function (mongoose) {
     const gameSchema = new Schema({
       word: String,
       setBy: String,
-      solvedBy: [String],
+      solvedBy: [String], //List of ids of players who have solved game.
     });
 
     gameSchema.methods.positionsOf = function (character) {

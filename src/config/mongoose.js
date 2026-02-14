@@ -4,14 +4,14 @@ import mongoose from 'mongoose';
 const { promise, resolve, reject } = Promise.withResolvers();
 
 let mongoconn = '';
-let devServer = null;
+let mongod = null;
 
 if (process.env.MONGODB_URL) {
   mongoconn = process.env.MONGODB_URL;
-  mongoose.connect(mongoconn);
+  mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
 } else {
   MongoMemoryServer.create().then((mongoServer) => {
-    devServer = mongoServer;
+    mongod = mongoServer;
     mongoconn = mongoServer.getUri();
     mongoose.connect(mongoconn);
   });
@@ -25,4 +25,4 @@ db.on('error', reject);
 
 export default promise;
 
-export { devServer };
+export { mongod };

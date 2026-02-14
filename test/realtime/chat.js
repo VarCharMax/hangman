@@ -56,7 +56,6 @@ describe('chat', function () {
     unnamedUser.client.emit('chatMessage', 'Hello!');
 
     unnamedUser.client.on('chatMessage', (data) => {
-      console.log(`Test call back: ${data.message}`);
       expect(data.message).to.contain('choose a username');
       expect(data.username).to.be.undefined;
       expect(data.type).to.equal('warning');
@@ -70,7 +69,6 @@ describe('chat', function () {
 
     //connectedUser should receive a message about newUser joining.
     connectedUser.client.on('chatMessage', (data) => {
-      console.log(`Test call back: ${data.message}`);
       expect(data.message).to.contain('arrived');
       expect(data.username).to.equal(newUser.name);
       expect(data.type).to.equal('action');

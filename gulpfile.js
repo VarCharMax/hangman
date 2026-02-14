@@ -1,8 +1,11 @@
 import gulp, { parallel, series } from 'gulp';
 
 import eslint from 'gulp-eslint-new';
+import exit from 'gulp-exit';
 import globals from 'globals';
+import mocha from 'gulp-mocha';
 import run from 'gulp-run';
+import server from './src/server.js';
 
 const lint_server = () => {
   return gulp
@@ -106,12 +109,44 @@ const lint_integration_test = () => {
     .pipe(eslint.failAfterError());
 };
 
+const integration_test = (done) => {
+  const TEST_PORT = 5000;
+
+  // Launch application befire test
+  server.then((server) => {
+    server.listen(TEST_PORT);
+    server.on('listening', () => {
+      return gulp
+        .src('integration-test/**/*.js', { read: false })
+        .pipe(
+          mocha().on('end', () => {
+            done();
+          })
+        )
+        .on('error', (error) => server.close(() => done(error)))
+        .on('end', () => server.close(done))
+        .pipe(exit());
+    });
+  });
+};
+
 const test = () => {
   return run(
     'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js'
   ).exec();
 };
 
-const lint = parallel(lint_server, lint_client, lint_test);
+const mocha_tests = (done) => {
+  return gulp
+    .src('test/**/*.js', { read: false })
+    .pipe(
+      mocha({ timeout: 10000 }).on('end', () => {
+        done();
+      })
+    )
+    .pipe(exit());
+};
 
-export default series(lint, test);
+const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
+
+export default series(lint, test, integration_test);

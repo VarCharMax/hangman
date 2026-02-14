@@ -17,7 +17,6 @@ export default (gameService, usersService) => {
     }
   });
 
-   
   router.get('/', function (req, res, next) {
     res.redirect('/');
   });
@@ -43,8 +42,10 @@ export default (gameService, usersService) => {
         if (req.user && game.matches(req.body.word)) {
           usersService.recordWin(req.user.id);
           gameService.recordWinner(game.id, req.user.id);
+          res.send('Winner!!!');
         }
         res.send({
+          //Array of positions matching posted letter.
           positions: game.positionsOf(req.body.letter),
         });
       },
@@ -70,7 +71,6 @@ export default (gameService, usersService) => {
     );
   });
 
-   
   router.get('/:id/created', function (req, res, next) {
     checkGameExists(req.params.id, res, (game) => {
       res.render('createdGame', { id: game.id, word: game.word });
