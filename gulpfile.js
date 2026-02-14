@@ -115,18 +115,19 @@ const integration_test = (done) => {
   // Launch application befire test
   server.then((server) => {
     server.listen(TEST_PORT);
-    server.on('listening', () => {
-      return gulp
-        .src('integration-test/**/*.js', { read: false })
-        .pipe(
-          mocha().on('end', () => {
-            server.close();
-            done();
-          })
-        )
-        .on('error', (error) => server.close(() => done(error)))
-        .pipe(exit());
-    });
+    server
+      .on('error', (error) => server.close(() => done(error)))
+      .on('listening', () => {
+        return gulp
+          .src('integration-test/**/*.js', { read: false })
+          .pipe(
+            mocha().on('end', () => {
+              server.close();
+              done();
+            })
+          )
+          .pipe(exit());
+      });
   });
 };
 
