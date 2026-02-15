@@ -1,8 +1,8 @@
 import gulp, { parallel, series } from 'gulp';
 
+import globals from 'globals';
 import eslint from 'gulp-eslint-new';
 import exit from 'gulp-exit';
-import globals from 'globals';
 import mocha from 'gulp-mocha';
 import run from 'gulp-run';
 import server from './src/server.js';
@@ -155,4 +155,4 @@ const mocha_tests = (done) => {
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 
-export default series(lint, tests);
+export default series(lint, tests, integration_test);
