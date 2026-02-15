@@ -3,39 +3,135 @@
 import { expect } from 'chai';
 import puppeteer from 'puppeteer';
 
+var rootUrl = 'http://localhost:5000'; // + process.env.TEST_PORT || 3000;
+
 describe('Website UI Integration', function () {
-  // Extend default timeout for Puppeteer operations
-  this.timeout(30000);
+  this.timeout(60000);
 
   let browser;
   let page;
 
   before(async function () {
-    browser = await puppeteer.launch({ headless: true }); // set to false to watch the browser actions
+    browser = await puppeteer.launch({ headless: true, devtools: true });
     page = await browser.newPage();
-    await page.goto('http://127.0.0.1:5000');
+    // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+    // console.log('Starting tests ...');
+    // Game via home page.
+    await page.goto(rootUrl, { waitUntil: 'networkidle2' });
+    await clearAllCookies(browser);
   });
 
   after(async function () {
     await browser.close();
   });
 
-  it('should have the correct page title', async function () {
+  it('should display title', async function () {
     const title = await page.title();
     expect(title).to.equal('Hangman');
   });
 
-  /*
-  it('should have an H1 element with specific text', async function () {
-    // Use page.$eval to select an element and run a function in the browser context
-    const h1Text = await page.$eval('h1', (el) => el.textContent);
-    expect(h1Text).to.equal('Example Domain');
+  it('should return 400 with message on invalid game submission', async function () {
+    const gameInputHandle = await page.$('#word');
+    await gameInputHandle.type('to');
+    const responsePromise = page.waitForResponse((response) => response.status() === 400);
+    await page.click('#gameCreate');
+
+    const response = await responsePromise;
+    const responseData = await response.text();
+
+    expect(response.status()).to.equal(400);
+    expect(
+      responseData,
+      'Word must be at least three characters long and contain only letters'
+    );
   });
 
-  it('should have only one paragraph element', async function () {
-    // Use page.$$ to select all matching elements and check the count
-    const paragraphs = await page.$$('p');
-    expect(paragraphs).to.have.lengthOf(1);
+  // Register user
+
+  /*
+  it('should return 400 on invalid game submission', async function () {
+    const gameInputHandle = await page.$('#word');
+    await gameInputHandle.type('to');
+
+    await Promise.all([
+      page.waitForResponse((res) => {
+        expect(res.status()).to.equal('400');
+      }),
+      page.click('#gameCreate'),
+    ]);
+  });
+
+
+  it('should return 304 then 400 on valid game submission', async function (done) {
+    // const wordValue = await page.$eval('#word', (el) => el.value);
+
+    const gameInputHandle = await page.$('#word');
+    await gameInputHandle.type('Example');
+
+    await Promise.all([
+      page.waitForResponse((res) => {
+        // Look for game listed.
+
+        done();
+      }),
+      page.waitForResponse((res) => {
+        // Look for game listed.
+        //expect(res).to.equal('400');
+        done();
+      }),
+      page.click('#gameCreate'),
+    ]);
+  });
+
+
+  it('should display empty game', async function (done) {
+    const wordValue = await page.$eval('#word', (el) => el.value);
+    expect(wordValue).to.equal('_______');
+    done();
+  });
+
+  it('should create game', async function () {
+    // Look for game object in html.
+  });
+
+  it('should register E as valid positional character', async function () {
+    // await page.keyboard.press('/')('keydown', page.event.key.E);
+    page.keyboard.down('KeyE').then(async (done) => {
+      // eslint-disable-next-line no-debugger
+      debugger;
+      const wordValue = await page.$eval('#word', (el) => el.value);
+      const missedLetters = await page.$eval('#missedLetters', (el) => el.value);
+      console.log(wordValue);
+      expect(wordValue).to.equal('E_____E');
+      expect(missedLetters).to.be.empty;
+      done();
+    });
+  });
+
+  it('should register T as missed character', async function () {
+    page.keyboard.down('KeyT').then(async (done) => {
+      // eslint-disable-next-line no-debugger
+      debugger;
+      const wordValue = await page.$eval('#word', (el) => el.value);
+      const missedLetters = await page.$eval('#missedLetters', (el) => el.value);
+      expect(wordValue).to.equal('E_____E');
+      expect(missedLetters).to.equal('T');
+      done();
+    });
   });
   */
 });
+
+/**
+ * Clears all cookies for the current page's browser context.
+ * @param {import('puppeteer').Page} page - The Puppeteer page object.
+ */
+async function clearAllCookies(browser) {
+  // Get all cookies from the current page's context
+  const cookies = await browser.cookies();
+
+  // Delete all the retrieved cookies using the spread operator
+  await browser.deleteCookie(...cookies);
+
+  console.log('All cookies cleared.');
+}

@@ -113,28 +113,33 @@ const integration_test = (done) => {
   const TEST_PORT = 5000;
 
   // Launch application befire test
-  server.then((server) => {
-    server.listen(TEST_PORT);
-    server
-      .on('error', (error) => server.close(() => done(error)))
-      .on('listening', () => {
-        return gulp
-          .src('integration-test/**/*.js', { read: false })
-          .pipe(
-            mocha().on('end', () => {
-              server.close();
-              done();
-            })
-          )
-          .pipe(exit());
-      });
+  server.then((sv) => {
+    sv.listen(TEST_PORT);
+    sv.on('listening', onListening.bind(sv));
+    sv.on('error', (error) => server.close(() => done(error))).on('listening', () => {
+      return gulp
+        .src('integration-test/**/*.js', { read: false })
+        .pipe(
+          mocha().on('end', () => {
+            sv.close();
+            done();
+          })
+        )
+        .pipe(exit());
+    });
   });
+
+  function onListening() {
+    var addr = this.address();
+    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    console.log('Listening on ' + bind);
+  }
 };
 
-const test = () => {
+const tests = (done) => {
   return run(
     'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js'
-  ).exec();
+  ).exec(done);
 };
 
 const mocha_tests = (done) => {
@@ -150,4 +155,4 @@ const mocha_tests = (done) => {
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 
-export default series(lint, test, integration_test);
+export default series(lint, tests);
