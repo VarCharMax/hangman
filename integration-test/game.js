@@ -14,9 +14,9 @@ describe('Website UI Integration', function () {
   before(async function () {
     browser = await puppeteer.launch({ headless: true, devtools: true });
     page = await browser.newPage();
+    page.setCacheEnabled(false);
     // page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
-    // console.log('Starting tests ...');
-    // Game via home page.
+    // Go to home page.
     await page.goto(rootUrl, { waitUntil: 'networkidle2' });
     await clearAllCookies(browser);
   });
@@ -60,7 +60,7 @@ describe('Website UI Integration', function () {
         const element = await page.$('.game');
         if (element) {
           let text = await page.evaluate((el) => el.textContent, element);
-          text = text.match(regex)[0].trim();
+          text = text.match(regex)[0].trim(); // A bit kludgy, can we come up with an re that does all of this?
           expect(text).to.equal(testWord.toUpperCase());
         }
       })
