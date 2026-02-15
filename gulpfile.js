@@ -2,7 +2,6 @@ import gulp, { parallel, series } from 'gulp';
 
 import globals from 'globals';
 import eslint from 'gulp-eslint-new';
-import exit from 'gulp-exit';
 import mocha from 'gulp-mocha';
 import run from 'gulp-run';
 import server from './src/server.js';
@@ -116,15 +115,12 @@ const integration_test = (done) => {
     sv.listen(TEST_PORT);
     sv.on('listening', onListening.bind(sv));
     sv.on('error', (error) => server.close(() => done(error))).on('listening', () => {
-      return gulp
-        .src('integration-test/**/*.js', { read: false })
-        .pipe(
-          mocha().on('end', () => {
-            sv.close();
-            done();
-          })
-        )
-        .pipe(exit());
+      return gulp.src('integration-test/**/*.js', { read: false }).pipe(
+        mocha().on('end', () => {
+          sv.close();
+          done();
+        })
+      );
     });
   });
 
@@ -137,7 +133,7 @@ const integration_test = (done) => {
 
 const tests = () => {
   return run(
-    'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js'
+    'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000  --colors test/**/*.js'
   ).exec();
 };
 

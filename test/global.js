@@ -15,14 +15,10 @@ after(function (done) {
     rd.destroy();
   });
 
-  mongoose
-    .then((db) => {
-      db.disconnect().then(() => {
-        mongod.stop().then(() => {});
-      });
-      done();
-    })
-    .catch(() => {
-      done();
+  mongoose.then((db) => {
+    db.disconnect().then(() => {
+      mongod.stop();
     });
+    done();
+  });
 });
