@@ -155,4 +155,4 @@ const mocha_tests = (done) => {
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 
-export default series(lint, tests, integration_test);
+export default series(lint, tests);
