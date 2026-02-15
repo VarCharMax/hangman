@@ -82,7 +82,6 @@ const lint_test = () => {
     .pipe(eslint.failAfterError());
 };
 
-// eslint-disable-next-line no-unused-vars
 const lint_integration_test = () => {
   return gulp
     .src('integration-test/**/*.js')
@@ -136,21 +135,10 @@ const integration_test = (done) => {
   }
 };
 
-const tests = (done) => {
+const tests = () => {
   return run(
     'npx cross-env NODE_ENV=test nyc --clean --check-coverage --lines 90 --statements 70 --branches 50 mocha --timeout 30000 --exit --colors test/**/*.js'
-  ).exec(done);
-};
-
-const mocha_tests = (done) => {
-  return gulp
-    .src('test/**/*.js', { read: false })
-    .pipe(
-      mocha({ timeout: 10000 }).on('end', () => {
-        done();
-      })
-    )
-    .pipe(exit());
+  ).exec();
 };
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
