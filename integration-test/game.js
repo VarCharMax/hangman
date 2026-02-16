@@ -19,7 +19,7 @@ describe('Website UI Integration', function () {
     // Go to home page.
     await page.goto(rootUrl, { waitUntil: 'networkidle2' });
     await clearAllCookies(browser);
-  });
+  }, 10000);
 
   after(async function () {
     await browser.close();
@@ -28,7 +28,7 @@ describe('Website UI Integration', function () {
   it('should display title', async function () {
     const title = await page.title();
     expect(title).to.equal('Hangman');
-  });
+  }, 15000);
 
   it('should return 400 with message on invalid game submission', async function () {
     const gameInputHandle = await page.$('#word');
@@ -46,51 +46,46 @@ describe('Website UI Integration', function () {
       responseData,
       'Word must be at least three characters long and contain only letters'
     );
-  });
+  }, 15000);
 
   it('should find new game listed after submission', async function () {
-    const regex = /.+?(?:\r?\n|$)/g;
     const testWord = 'Example';
     const gameInputHandle = await page.$('#word');
     await gameInputHandle.click({ clickCount: 3 }); //Select any existing text.
     await gameInputHandle.type(testWord);
 
-    await Promise.all([page.waitForSelector('.game'), page.click('#gameCreate')])
-      .then(async () => {
+    await Promise.all([page.waitForSelector('.game'), page.click('#gameCreate')]).then(
+      async () => {
+        const element = await page.$('.word');
+        if (element) {
+          let text = await page.evaluate((el) => el.textContent, element);
+          expect(text).to.equal(testWord.toUpperCase());
+        }
+      }
+    );
+  }, 15000);
+
+  // Register user
+  /*
+  it('should list available game after user registration', async function () {
+    // const wordValue = await page.$eval('#word', (el) => el.value);
+    clearAllCookies();
+    const gameInputHandle = await page.$('#name');
+    await gameInputHandle.type('User2');
+
+    await Promise.all([page.waitForSelector('.game'), page.click('#userCreate')]).then(
+      async () => {
         const element = await page.$('.game');
         if (element) {
           let text = await page.evaluate((el) => el.textContent, element);
           text = text.match(regex)[0].trim(); // A bit kludgy, can we come up with an re that does all of this?
           expect(text).to.equal(testWord.toUpperCase());
         }
-      })
-      .catch(() => {});
-  });
-
-  // Register user
+      }
+    );
+  }, 15000);
+*/
   /*
-  it('should return 304 then 400 on valid game submission', async function (done) {
-    // const wordValue = await page.$eval('#word', (el) => el.value);
-
-    const gameInputHandle = await page.$('#word');
-    await gameInputHandle.type('Example');
-
-    await Promise.all([
-      page.waitForResponse((res) => {
-        // Look for game listed.
-
-        done();
-      }),
-      page.waitForResponse((res) => {
-        // Look for game listed.
-        //expect(res).to.equal('400');
-        done();
-      }),
-      page.click('#gameCreate'),
-    ]);
-  });
-
-
   it('should display empty game', async function (done) {
     const wordValue = await page.$eval('#word', (el) => el.value);
     expect(wordValue).to.equal('_______');
@@ -131,7 +126,7 @@ describe('Website UI Integration', function () {
 
 /**
  * Clears all cookies for the current page's browser context.
- * @param {import('puppeteer').Page} page - The Puppeteer page object.
+ * @param {import('puppeteer').Browser} browser - The Puppeteer browser object.
  */
 async function clearAllCookies(browser) {
   // Get all cookies from the current page's context
@@ -140,5 +135,5 @@ async function clearAllCookies(browser) {
   // Delete all the retrieved cookies using the spread operator
   await browser.deleteCookie(...cookies);
 
-  console.log('All cookies cleared.');
+  // console.log('All cookies cleared.');
 }

@@ -8,6 +8,9 @@ before(function (done) {
   redisClient.then((rd) => {
     rd.flushDb().then(() => done());
   });
+  mongoose.then((db) => {
+    db.connection.db.dropDatabase();
+  });
 });
 
 after(function (done) {

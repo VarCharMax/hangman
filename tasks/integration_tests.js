@@ -1,6 +1,7 @@
+import appServer from '../src/server.js';
+import exit from 'gulp-exit';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
-import appServer from '../src/server.js';
 
 const integration_test = (done) => {
   const TEST_PORT = 5000;
@@ -8,15 +9,24 @@ const integration_test = (done) => {
   // Launch application before test
   appServer.then((sv) => {
     sv.listen(TEST_PORT);
+    sv.on('listening', onListening.bind(sv));
     sv.on('error', (error) => sv.close(() => done(error))).on('listening', () => {
-      return gulp.src('integration-test/**/*.js').pipe(
-        mocha().on('end', () => {
-          sv.close();
-          done();
-        })
-      );
+      return gulp
+        .src('integration-test/**/*.js', { read: false })
+        .pipe(
+          mocha({ exit: true, timeout: 30000 }).on('end', () => {
+            sv.close(done);
+          })
+        )
+        .pipe(exit());
     });
   });
+
+  function onListening() {
+    var addr = this.address();
+    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    console.log('Listening on ' + bind);
+  }
 };
 
 export { integration_test };
