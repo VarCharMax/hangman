@@ -1,9 +1,15 @@
 /* eslint-disable no-undef */
 
+import dotenv from 'dotenv';
 import { expect } from 'chai';
 import puppeteer from 'puppeteer';
 
-var rootUrl = 'http://localhost:5000'; // + process.env.TEST_PORT || 3000;
+//Populate env variables from .env file.
+dotenv.config();
+
+const TEST_PORT = process.env.TEST_PORT;
+
+var rootUrl = `http://localhost:${TEST_PORT}`;
 
 describe('Website UI Integration', function () {
   this.timeout(60000);
@@ -22,6 +28,7 @@ describe('Website UI Integration', function () {
   }, 10000);
 
   after(async function () {
+    await page.close();
     await browser.close();
   });
 

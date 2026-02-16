@@ -1,10 +1,13 @@
 import appServer from '../src/server.js';
+import dotenv from 'dotenv';
 import exit from 'gulp-exit';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
+dotenv.config();
+
 const integration_test = (done) => {
-  const TEST_PORT = 5000;
+  const TEST_PORT = process.env.TEST_PORT;
 
   // Launch application before test
   appServer.then((sv) => {
