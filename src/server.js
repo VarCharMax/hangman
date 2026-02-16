@@ -5,6 +5,7 @@ import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
 import dbProvider from './config/mongoose.js';
 import debug from 'debug';
+import dotenv from 'dotenv';
 import gameService from './services/games.js';
 import http from 'http';
 import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
@@ -15,14 +16,15 @@ import usersMW from './middleware/users.js';
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
 
+dotenv.config({ path: './.runtime_env' });
+
 dbProvider
   .then((db) => {
     application(db).then((app) => {
       serverdebug('Server starting ...');
 
       const server = http.createServer(app);
-
-      let io = new Socket(server);
+      const io = new Socket(server);
 
       // Create federated io server using Redis.
       if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {

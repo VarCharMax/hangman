@@ -4,8 +4,6 @@ import exit from 'gulp-exit';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
-dotenv.config({ path: './.test_env' });
-
 const integration_test = (done) => {
   const TEST_PORT = process.env.TEST_PORT;
 
