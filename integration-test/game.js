@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import puppeteer from 'puppeteer';
 
 //Populate env variables from .env file.
-dotenv.config();
+dotenv.config({ path: './.test_env' });
 
 const TEST_PORT = process.env.TEST_PORT;
 
@@ -120,7 +120,6 @@ describe('Website UI Integration', function () {
   it('should register T as missed character', async function () {
     page.keyboard.down('KeyT').then(async (done) => {
       // eslint-disable-next-line no-debugger
-      debugger;
       const wordValue = await page.$eval('#word', (el) => el.value);
       const missedLetters = await page.$eval('#missedLetters', (el) => el.value);
       expect(wordValue).to.equal('E_____E');

@@ -4,7 +4,7 @@ import exit from 'gulp-exit';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
-dotenv.config();
+dotenv.config({ path: './.test_env' });
 
 const integration_test = (done) => {
   const TEST_PORT = process.env.TEST_PORT;
@@ -17,7 +17,7 @@ const integration_test = (done) => {
       return gulp
         .src('integration-test/**/*.js', { read: false })
         .pipe(
-          mocha({ exit: true, timeout: 30000 }).on('end', () => {
+          mocha({ timeout: 30000 }).on('end', () => {
             sv.close(done);
           })
         )
