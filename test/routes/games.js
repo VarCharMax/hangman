@@ -1,11 +1,11 @@
 /* eslint-disable no-undef */
 
 import bodyParser from 'body-parser';
-import dbase from '../../src/config/mongoose.js';
 import { expect } from 'chai';
 import express from 'express';
 import games from '../../src/routes/games.js';
 import gamesService from '../../src/services/games.js';
+import mongooseServer from '../../src/config/mongoose.js';
 import request from 'supertest';
 import usersService from '../../src/services/users.js';
 
@@ -14,8 +14,8 @@ describe('/games', () => {
   userId = 'test-user-id';
 
   before((done) => {
-    dbase
-      .then((mongoose) => {
+    mongooseServer()
+      .then((mg) => {
         app = express();
         app.use(bodyParser.json());
         app.use((req, _res, next) => {
@@ -23,9 +23,9 @@ describe('/games', () => {
           req.user = { id: userId };
           next();
         });
-        gamesService(mongoose).then((gs) => {
+        gamesService(mg).then((gs) => {
           g_service = gs;
-          usersService.then((us) => {
+          usersService().then((us) => {
             u_service = us;
             app.use('/games', games(g_service, u_service));
             done();

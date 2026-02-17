@@ -3,9 +3,6 @@
 import { expect } from 'chai';
 import puppeteer from 'puppeteer';
 
-//Populate env variables from .env file.
-// dotenv.config({ path: './.test_env' });
-
 const TEST_PORT = process.env.TEST_PORT;
 
 var rootUrl = `http://localhost:${TEST_PORT}`;

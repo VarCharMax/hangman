@@ -6,11 +6,10 @@ import {
 } from './tasks/lint_tests.js';
 import { parallel, series } from 'gulp';
 
-import dotenv from 'dotenv';
 import { integration_test } from './tasks/integration_tests.js';
 import { unit_tests } from './tasks/unit_tests.js';
 
-dotenv.config({ path: './.test_env' });
+// import { demo } from './tasks/demo.js';
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 

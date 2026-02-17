@@ -1,28 +1,37 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { getNamedExport } from './../lib/libraries.js';
 import mongoose from 'mongoose';
 
-const { promise, resolve, reject } = Promise.withResolvers();
-
-let mongoconn = '';
 let mongod = null;
 
-if (process.env.MONGODB_URL) {
-  mongoconn = process.env.MONGODB_URL;
-  mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
-} else {
-  MongoMemoryServer.create().then((mongoServer) => {
-    mongod = mongoServer;
-    mongoconn = mongoServer.getUri();
-    mongoose.connect(mongoconn);
+const mongooseServer = async () => {
+  const { promise, resolve, reject } = Promise.withResolvers();
+  let mongoconn = '';
+
+  if (process.env.MONGODB_URL) {
+    mongoconn = process.env.MONGODB_URL;
+    mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
+  } else {
+    const MongoMemoryServer = await getNamedExport(
+      'MongoMemoryServer',
+      'mongodb-memory-server'
+    );
+
+    MongoMemoryServer.create().then((mongoServer) => {
+      mongod = mongoServer;
+      mongoconn = mongoServer.getUri();
+      mongoose.connect(mongoconn);
+    });
+  }
+
+  let db = mongoose.connection;
+  db.once('open', () => {
+    resolve(mongoose);
   });
-}
+  db.on('error', reject);
 
-let db = mongoose.connection;
-db.once('open', () => {
-  resolve(mongoose);
-});
-db.on('error', reject);
+  return promise;
+};
 
-export default promise;
+export default mongooseServer;
 
 export { mongod };

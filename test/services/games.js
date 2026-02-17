@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 
-import dbase from '../../src/config/mongoose.js';
 import { expect } from 'chai';
 import gservice from '../../src/services/games.js';
+import mongooseServer from '../../src/config/mongoose.js';
 
 describe('Game service', () => {
   const firstUserId = 'user-id-1';
@@ -10,9 +10,9 @@ describe('Game service', () => {
   let service;
 
   before((done) => {
-    dbase
-      .then((mongoose) => {
-        gservice(mongoose).then((gs) => {
+    mongooseServer()
+      .then((mg) => {
+        gservice(mg).then((gs) => {
           service = gs;
           done();
         });

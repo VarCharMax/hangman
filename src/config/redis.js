@@ -1,23 +1,33 @@
-import { createClient } from 'redis';
 import debug from 'debug';
-import { redisClientMock } from '../classes/redisClientMock.js';
+import { getNamedExport } from './../lib/libraries.js';
 
-const { promise, resolve, reject } = Promise.withResolvers();
 const redisdebug = debug('hangman:config:redis');
-let redisClient;
 
-if (process.env.REDIS_URL) {
-  redisClient = createClient({
-    url: process.env.REDIS_URL,
-  });
-} else {
-  redisdebug('Redis URL not found. Falling back to mock DB ...');
-  redisClient = new redisClientMock();
-}
+const redisClient = async () => {
+  const { promise, resolve, reject } = Promise.withResolvers();
 
-redisClient.on('ready', () => resolve(redisClient));
-redisClient.on('error', (err) => reject(err));
+  let client;
 
-redisClient.connect();
+  if (process.env.REDIS_URL) {
+    const createClient = await getNamedExport('createClient', 'redis');
+    client = createClient({
+      url: process.env.REDIS_URL,
+    });
+  } else {
+    redisdebug('Redis URL not found. Falling back to mock DB ...');
+    const redisClientMock = await getNamedExport(
+      'redisClientMock',
+      '../classes/redisClientMock.js'
+    );
+    client = new redisClientMock();
+  }
 
-export default promise;
+  client.on('ready', () => resolve(client));
+  client.on('error', (err) => reject(err));
+
+  client.connect();
+
+  return promise;
+};
+
+export default redisClient;
