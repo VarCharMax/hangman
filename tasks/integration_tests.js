@@ -8,7 +8,7 @@ const integration_test = async () => {
   dotenv.config({ path: './.integration_test_env', override: true });
 
   // Launch application before test
-  const appServer = await getDefaultExport('../src/server.js');
+  const appServer = await getDefaultExport('../server.js');
 
   appServer().then((sv) => {
     sv.listen(process.env.TEST_PORT);
