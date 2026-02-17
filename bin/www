@@ -1,14 +1,18 @@
 import debug from 'debug';
+import dotenv from 'dotenv';
 import server from '../src/server.js';
 
-var port = normalizePort(process.env.PORT || '3000');
 const serverdebug = debug('hangman:server');
-
+let port = '';
 serverdebug('Booting App ...');
 
-server
+server()
   .then((s) => {
-    s.listen(port);
+    dotenv.config({ path: './.runtime_env' });
+    const sPort = normalizePort(process.env.PORT || '3000');
+    port = sPort;
+
+    s.listen(sPort);
     s.on('error', onError);
     s.on('listening', onListening.bind(s));
   })
