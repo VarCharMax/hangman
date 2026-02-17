@@ -6,7 +6,7 @@ import userService from '../../src/services/users.js';
 let u_service;
 
 before((done) => {
-  userService.then((us) => {
+  userService().then((us) => {
     u_service = us;
     done();
   });

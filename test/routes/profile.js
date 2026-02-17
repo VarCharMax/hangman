@@ -21,7 +21,7 @@ describe('/profile', function () {
       next();
     });
 
-    userService.then((us) => {
+    userService().then((us) => {
       uService = us;
       app.use('/profile', profile(us));
     });

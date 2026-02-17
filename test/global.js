@@ -5,7 +5,7 @@ import mongooseServer, { mongod } from '../src/config/mongoose.js';
 import redisClient from '../src/config/redis.js';
 
 before(function (done) {
-  redisClient.then((rd) => {
+  redisClient().then((rd) => {
     rd.flushDb().then(() => done());
   });
   mongooseServer().then((db) => {
@@ -14,7 +14,7 @@ before(function (done) {
 });
 
 after(function (done) {
-  redisClient.then((rd) => {
+  redisClient().then((rd) => {
     rd.destroy();
   });
 
