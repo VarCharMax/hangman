@@ -26,7 +26,7 @@ const appServer = () => {
 
         // Create federated io server using Redis.
         if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-          redisClient.then(async (rd) => {
+          redisClient().then(async (rd) => {
             const subClient = rd.duplicate();
             await subClient.connect();
             io.adapter(redisAdapter(rd, subClient));

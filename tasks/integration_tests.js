@@ -14,13 +14,9 @@ const integration_test = async () => {
     sv.listen(process.env.TEST_PORT);
     sv.on('listening', onListening.bind(sv))
       .on('listening', () => {
-        gulp
+        return gulp
           .src('integration-test/**/*.js', { read: false })
-          .pipe(
-            mocha({ timeout: 30000 }).on('end', () => {
-              sv.close();
-            })
-          )
+          .pipe(mocha({ timeout: 30000 }).on('end', () => sv.close()))
           .pipe(exit());
       })
       .on('error', () => sv.close());
