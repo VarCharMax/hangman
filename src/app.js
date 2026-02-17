@@ -36,7 +36,7 @@ export default (db) => {
 
   gameService(db)
     .then((gs) => {
-      userService
+      userService()
         .then((us) => {
           app.use(usersMW(us));
           app.use('/', homeRoute(gs, us));

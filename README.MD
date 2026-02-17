@@ -50,3 +50,4 @@ Main issues:
 
 - DB implementation isn't fully DI - I'm calling library-specific methods in native code. Methods should be wrapped in order to isolate database implementation from calling code.
 - Add improvements to interface. Should show win or lose based on number of tries. Add link back to homepage.
+- User id is created automatically the first time a user navigates to the site. But creating a user name is optional. You can create games without having one (but you can't enter the chat). But what happen if you change the user name? Or try to create one that is already in use? It isn't clear.

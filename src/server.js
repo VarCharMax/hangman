@@ -21,8 +21,6 @@ const appServer = () => {
       application(db).then((app) => {
         serverdebug('Server starting ...');
 
-        let env = process.env.DEBUG;
-
         const server = http.createServer(app);
         const io = new Socket(server);
 

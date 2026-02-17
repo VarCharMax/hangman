@@ -9,10 +9,7 @@ import { parallel, series } from 'gulp';
 import { integration_test } from './tasks/integration_tests.js';
 import { unit_tests } from './tasks/unit_tests.js';
 
-// import { demo } from './tasks/demo.js';
-
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 
 export default series(lint, unit_tests);
-
 export { integration_test };
