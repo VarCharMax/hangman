@@ -1,4 +1,4 @@
-import { getNamedExport } from './../lib/libraries.js';
+import { getDefaultExport } from './../lib/libraries.js';
 import mongoose from 'mongoose';
 
 let mongod = null;
@@ -11,10 +11,7 @@ const mongooseServer = async () => {
     mongoconn = process.env.MONGODB_URL;
     mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
   } else {
-    const MongoMemoryServer = await getNamedExport(
-      'MongoMemoryServer',
-      'mongodb-memory-server'
-    );
+    const MongoMemoryServer = await getDefaultExport('mongodb-memory-server');
 
     MongoMemoryServer.create().then((mongoServer) => {
       mongod = mongoServer;
