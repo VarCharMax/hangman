@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import exit from 'gulp-exit';
-import { getDefaultExport } from './../src/lib/libraries.js';
+import { getNamedExport } from './../src/lib/libraries.js';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
@@ -8,7 +8,7 @@ const integration_test = async () => {
   dotenv.config({ path: './.integration_test_env', override: true });
 
   // Launch application before test
-  const appServer = await getDefaultExport('../server.js'); //Path is relative to lib folder, not this script.
+  const appServer = await getNamedExport('appServer', '../server.js'); //Path is relative to lib folder, not this script.
 
   appServer().then((sv) => {
     sv.listen(process.env.TEST_PORT);
