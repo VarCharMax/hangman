@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import userService from '../../src/services/users.js';
+import { userService } from '../../src/services/users.js';
 
 let u_service;
 

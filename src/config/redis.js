@@ -2,10 +2,9 @@ import debug from 'debug';
 import { getNamedExport } from './../lib/libraries.js';
 
 const redisdebug = debug('hangman:config:redis');
+const { promise, resolve, reject } = Promise.withResolvers();
 
-const redisClient = async () => {
-  const { promise, resolve, reject } = Promise.withResolvers();
-
+export async function redisClient() {
   let client;
 
   if (process.env.REDIS_URL) {
@@ -28,6 +27,4 @@ const redisClient = async () => {
   client.connect();
 
   return promise;
-};
-
-export default redisClient;
+}

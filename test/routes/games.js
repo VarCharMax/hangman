@@ -4,17 +4,17 @@ import bodyParser from 'body-parser';
 import { expect } from 'chai';
 import express from 'express';
 import games from '../../src/routes/games.js';
-import gamesService from '../../src/services/games.js';
-import mongooseServer from '../../src/config/mongoose.js';
+import { gamesService } from '../../src/services/games.js';
+import { mongodbClient } from '../../src/config/mongoose.js';
 import request from 'supertest';
-import usersService from '../../src/services/users.js';
+import { userService } from '../../src/services/users.js';
 
 describe('/games', () => {
   let userId, agent, g_service, u_service, app;
   userId = 'test-user-id';
 
   before((done) => {
-    mongooseServer()
+    mongodbClient()
       .then((mg) => {
         app = express();
         app.use(bodyParser.json());
@@ -25,14 +25,14 @@ describe('/games', () => {
         });
         gamesService(mg).then((gs) => {
           g_service = gs;
-          usersService().then((us) => {
+          userService().then((us) => {
             u_service = us;
             app.use('/games', games(g_service, u_service));
             done();
           });
         });
       })
-      .catch(done);
+      .catch((err) => done(err));
   });
 
   beforeEach(function (done) {

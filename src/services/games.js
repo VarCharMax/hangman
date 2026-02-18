@@ -2,8 +2,13 @@
 import { ObjectId } from 'mongodb';
 
 const emitter = new EventEmitter();
+const { promise, resolve, reject } = Promise.withResolvers();
 
-export default function (mongoose) {
+export function gameService(mongoose) {
+  if (!mongoose) {
+    reject('Database not available.');
+  }
+
   let Game = mongoose.models['Game'];
 
   if (!Game) {
@@ -61,12 +66,9 @@ export default function (mongoose) {
     events: emitter,
   };
 
-  return new Promise((resolve, reject) => {
-    if (!mongoose) {
-      reject('Database not available.');
-    }
-    resolve(gs_methods);
-  });
+  resolve(gs_methods);
+
+  return promise;
 }
 
 const events = emitter;

@@ -1,24 +1,25 @@
+import { Application } from './app.js';
 import { Server as Socket } from 'socket.io';
-import application from './app.js';
 import cookieParser from 'cookie-parser';
 import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
-import dbProvider from './config/mongoose.js';
 import debug from 'debug';
-import gameService from './services/games.js';
+import { gameService } from './services/games.js';
 import http from 'http';
+import { mongodbClient } from './config/mongoose.js';
 import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
-import redisClient from './config/redis.js';
-import userService from './services/users.js';
+import { redisClient } from './config/redis.js';
+import { userService } from './services/users.js';
 import usersMW from './middleware/users.js';
 
-const appServer = () => {
-  const { promise, resolve, reject } = Promise.withResolvers();
+const { promise, resolve, reject } = Promise.withResolvers();
+
+export function appServer() {
   const serverdebug = debug('hangman:server');
 
-  dbProvider()
+  mongodbClient()
     .then((db) => {
-      application(db).then((app) => {
+      Application(db).then((app) => {
         serverdebug('Server starting ...');
 
         const server = http.createServer(app);
@@ -72,6 +73,4 @@ const appServer = () => {
     });
 
   return promise;
-};
-
-export default appServer;
+}

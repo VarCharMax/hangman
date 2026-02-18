@@ -4,18 +4,19 @@ import debug from 'debug';
 import express from 'express';
 import favicon from 'serve-favicon';
 import { fileURLToPath } from 'url';
-import gameService from './services/games.js';
+import { gameService } from './services/games.js';
 import gamesRoute from './routes/games.js';
 import homeRoute from './routes/index.js';
 import logger from 'morgan';
 import path from 'path';
 import profileRoute from './routes/profile.js';
 import render from 'hogan-express';
-import userService from './services/users.js';
+import { userService } from './services/users.js';
 import usersMW from './middleware/users.js';
 
-export default (db) => {
-  const { promise, resolve, reject } = Promise.withResolvers();
+const { promise, resolve, reject } = Promise.withResolvers();
+
+export function Application(db) {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   const appdebug = debug('hangman:app');
@@ -87,4 +88,4 @@ export default (db) => {
     });
 
   return promise;
-};
+}

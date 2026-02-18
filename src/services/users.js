@@ -1,8 +1,10 @@
-import redisClient from '../config/redis.js';
+import { redisClient } from '../config/redis.js';
 
-const userService = () => {
-  const { promise, resolve, reject } = Promise.withResolvers();
+const { promise, resolve, reject } = Promise.withResolvers();
 
+//TODO: To be consistent, redisClient should get passed in as parameter.
+
+export function userService() {
   redisClient().then((redis) => {
     if (!redis) {
       reject('Redis server not found.');
@@ -48,6 +50,6 @@ const userService = () => {
   });
 
   return promise;
-};
+}
 
 export default userService;
