@@ -32,6 +32,7 @@
     "redis": "^5.10.0",
     "serve-favicon": "~2.5.1",
     "socket.io": "^4.8.3",
+    "supports-color": "^10.2.2",
     "uuid": "13.0.0"
   },
   "devDependencies": {
