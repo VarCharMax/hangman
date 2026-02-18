@@ -1,9 +1,12 @@
 import { mongod, mongodbClient } from '../src/config/mongoose.js';
 
+import debug from 'debug';
 import { redisClient } from '../src/config/redis.js';
 
+const testdebug = debug('hangman:test');
+
 export async function mochaGlobalSetup() {
-  console.log('Setup ...');
+  testdebug('Setup ...');
   if (mongod) {
     mongod.stop();
   }
@@ -13,7 +16,7 @@ export async function mochaGlobalSetup() {
 }
 
 export async function mochaGlobalTeardown() {
-  console.log('Teardown');
+  testdebug('Teardown');
   redisClient().then((rd) => {
     rd.destroy();
   });

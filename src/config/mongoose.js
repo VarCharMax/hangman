@@ -25,7 +25,7 @@ export async function mongodbClient() {
       //Will return a randomised port every time it gets called. So important not to
       //call it more than once.
       mongoconn = mongoServer.getUri();
-      console.log(`Connecting to mock connection: ${mongoconn}`);
+      console.log(`Connecting to mock db server: ${mongoconn} ...`);
       mongoose.connect(mongoconn);
     });
   }
