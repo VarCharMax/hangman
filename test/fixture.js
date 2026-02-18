@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import { mongod, mongodbClient } from '../src/config/mongoose.js';
 
 import { redisClient } from '../src/config/redis.js';
@@ -11,9 +9,6 @@ export async function mochaGlobalSetup() {
   }
   redisClient().then(async (rd) => {
     await rd.flushDb();
-  });
-  mongodbClient().then((db) => {
-    db.connection.db.dropDatabase();
   });
 }
 

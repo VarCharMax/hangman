@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
-dotenv.config({ path: './.test_env' });
+dotenv.config({ path: './.test_env', override: true });
 
 const mocha_unit_tests = function (done) {
   return gulp
