@@ -4,19 +4,21 @@ import { mongod, mongodbClient } from '../src/config/mongoose.js';
 
 import { redisClient } from '../src/config/redis.js';
 
-before(function (done) {
+export async function mochaGlobalSetup() {
+  console.log('Setup ...');
   if (mongod) {
     mongod.stop();
   }
-  redisClient().then((rd) => {
-    rd.flushDb().then(() => done());
+  redisClient().then(async (rd) => {
+    await rd.flushDb();
   });
   mongodbClient().then((db) => {
     db.connection.db.dropDatabase();
   });
-});
+}
 
-after(function (done) {
+export async function mochaGlobalTeardown() {
+  console.log('Teardown');
   redisClient().then((rd) => {
     rd.destroy();
   });
@@ -25,6 +27,5 @@ after(function (done) {
     db.disconnect().then(() => {
       mongod.stop();
     });
-    done();
   });
-});
+}

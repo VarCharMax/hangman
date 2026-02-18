@@ -1,3 +1,2 @@
 TEST_PORT=3000
 NODE_ENV=test
-DEBUG=*

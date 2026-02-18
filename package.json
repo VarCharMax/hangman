@@ -48,6 +48,7 @@
     "gulp-run": "^1.7.1",
     "gulp-shell": "^0.8.0",
     "mocha": "^11.7.5",
+    "mocha-suppress-logs": "^0.6.0",
     "mongodb-memory-server": "^11.0.1",
     "nyc": "^17.1.0",
     "puppeteer": "^24.37.3",

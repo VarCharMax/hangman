@@ -8,22 +8,21 @@ const { promise, resolve, reject } = Promise.withResolvers();
 export async function mongodbClient() {
   if (process.env.MONGODB_URL) {
     mongoconn = process.env.MONGODB_URL;
-    // mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
+    mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
   } else {
-    if (!mongod) {
-      const MongoMemoryServer = await getNamedExport(
-        'MongoMemoryServer',
-        'mongodb-memory-server'
-      );
+    const MongoMemoryServer = await getNamedExport(
+      'MongoMemoryServer',
+      'mongodb-memory-server'
+    );
 
-      mongod = await MongoMemoryServer.create();
+    MongoMemoryServer.create().then((mongoServer) => {
+      mongod = mongoServer;
       //Will return a randomised port every time it gets called. So important not to
-      //call it repeatedly.
-      mongoconn = mongod.getUri();
-    }
+      //call it more than once.
+      mongoconn = mongoServer.getUri();
+      mongoose.connect(mongoconn);
+    });
   }
-
-  mongoose.connect(mongoconn);
 
   let db = mongoose.connection;
   db.once('open', () => {

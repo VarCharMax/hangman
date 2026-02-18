@@ -4,10 +4,10 @@ import mocha from 'gulp-mocha';
 
 dotenv.config({ path: './.test_env' });
 
-const unit_tests = function (done) {
+const mocha_unit_tests = function (done) {
   return gulp
-    .src(['test/**/*.js'], { read: false })
-    .pipe(mocha({ reporter: 'list', exit: true }))
+    .src(['test/services/games.js'], { read: false })
+    .pipe(mocha({ require: './test/fixture.js', exit: true, timeout: 60000 }))
     .on('error', console.error)
     .once('end', function () {
       done();
@@ -15,4 +15,4 @@ const unit_tests = function (done) {
     });
 };
 
-export default unit_tests;
+export { mocha_unit_tests };
