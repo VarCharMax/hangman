@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
 
-import { Server as Socket } from 'socket.io';
-import createChatServer from '../../src/realtime/chat.js';
-import createClient from 'socket.io-client';
 import { expect } from 'chai';
 import http from 'http';
+import { Server as Socket } from 'socket.io';
+import createClient from 'socket.io-client';
+import createChatServer from '../../src/realtime/chat.js';
 
 describe('chat', function () {
   this.timeout(20000);

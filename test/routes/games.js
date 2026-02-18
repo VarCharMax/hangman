@@ -3,10 +3,10 @@
 import bodyParser from 'body-parser';
 import { expect } from 'chai';
 import express from 'express';
+import request from 'supertest';
+import { mongodbClient } from '../../src/config/mongoose.js';
 import games from '../../src/routes/games.js';
 import { gamesService } from '../../src/services/games.js';
-import { mongodbClient } from '../../src/config/mongoose.js';
-import request from 'supertest';
 import { userService } from '../../src/services/users.js';
 
 describe('/games', () => {

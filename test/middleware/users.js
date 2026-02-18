@@ -2,9 +2,9 @@
 
 import * as chai from 'chai';
 
-import factory from '../../src/middleware/users.js';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import factory from '../../src/middleware/users.js';
 
 describe('Users middleware', () => {
   const defaultUserId = 'user-id-1';

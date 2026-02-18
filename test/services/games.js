@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
 
 import { expect } from 'chai';
-import { gameService } from '../../src/services/games.js';
 import { mongodbClient } from '../../src/config/mongoose.js';
+import { gameService } from '../../src/services/games.js';
 
 describe('Game service', () => {
   const firstUserId = 'user-id-1';

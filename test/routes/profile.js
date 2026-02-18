@@ -1,12 +1,11 @@
 /* eslint-disable no-undef */
-'use strict';
 
 import bodyParser from 'body-parser';
 import { expect } from 'chai';
 import express from 'express';
-import profile from '../../src/routes/profile.js';
 import request from 'supertest';
-import userService from '../../src/services/users.js';
+import profile from '../../src/routes/profile.js';
+import { userService } from '../../src/services/users.js';
 
 const userId = 'test-user-id';
 

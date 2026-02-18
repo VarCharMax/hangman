@@ -2,17 +2,17 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import debug from 'debug';
 import express from 'express';
-import favicon from 'serve-favicon';
-import { fileURLToPath } from 'url';
-import { gameService } from './services/games.js';
-import gamesRoute from './routes/games.js';
-import homeRoute from './routes/index.js';
+import render from 'hogan-express';
 import logger from 'morgan';
 import path from 'path';
-import profileRoute from './routes/profile.js';
-import render from 'hogan-express';
-import { userService } from './services/users.js';
+import favicon from 'serve-favicon';
+import { fileURLToPath } from 'url';
 import usersMW from './middleware/users.js';
+import gamesRoute from './routes/games.js';
+import homeRoute from './routes/index.js';
+import profileRoute from './routes/profile.js';
+import { gameService } from './services/games.js';
+import { userService } from './services/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 
