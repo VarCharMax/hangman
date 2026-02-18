@@ -6,8 +6,8 @@ dotenv.config({ path: './.test_env', override: true });
 
 const mocha_unit_tests = function (done) {
   return gulp
-    .src(['test/services/games.js'], { read: false })
-    .pipe(mocha({ require: './test/fixture.js', exit: true, timeout: 60000 }))
+    .src(['test/**/*.js'], { read: false })
+    .pipe(mocha({ require: './test/fixture.js', timeout: 60000 }))
     .on('error', console.error)
     .once('end', function () {
       done();

@@ -12,5 +12,5 @@ import { unit_tests } from './tasks/unit_tests.js';
 
 const lint = parallel(lint_server, lint_client, lint_test, lint_integration_test);
 
-export default series(mocha_unit_tests);
+export default series(lint, unit_tests);
 export { integration_test };
