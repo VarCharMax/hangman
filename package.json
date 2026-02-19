@@ -48,6 +48,7 @@
     "gulp-mocha": "^10.0.1",
     "gulp-run": "^1.7.1",
     "gulp-shell": "^0.8.0",
+    "ioredis-mock": "^8.13.1",
     "mocha": "^11.7.5",
     "mocha-suppress-logs": "^0.6.0",
     "mongodb-memory-server": "^11.0.1",

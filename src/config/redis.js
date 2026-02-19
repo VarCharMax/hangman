@@ -4,6 +4,8 @@ import { getNamedExport } from './../lib/libraries.js';
 const redisdebug = debug('hangman:config:redis');
 const { promise, resolve, reject } = Promise.withResolvers();
 
+//TODO: switch to ioredis / ioredis-mock
+
 export async function redisClient() {
   let client;
 
