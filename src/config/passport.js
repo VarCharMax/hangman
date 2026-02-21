@@ -39,6 +39,7 @@ export function passportClient(usersService) {
     );
   }
 
+  // Dummy login for tests.
   if (process.env.NODE_ENV === 'test') {
     const LocalStrategy = getDefaultExport('passport-local');
     const uuid = getDefaultExport('uuid');
