@@ -58,7 +58,6 @@ export function Application(db) {
           app.use(Session(passport));
           addAuthEndpoints('twitter');
           addAuthEndpoints('facebook');
-
           app.use('/', homeRoute(gs, us));
           app.use('/games', gamesRoute(gs, us));
           app.use('/profile', profileRoute(us));
