@@ -2,10 +2,10 @@ import * as uuid from 'uuid';
 
 export default (service) => {
   return function (req, res, next) {
-    let userId = req.cookies.userId;
+    let userId = req.session.userId;
     if (!userId) {
       userId = uuid.v4();
-      res.cookie('userId', userId);
+      res.session.userId = userId;
       req.user = {
         id: userId,
       };

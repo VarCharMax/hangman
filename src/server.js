@@ -1,22 +1,25 @@
-import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
-import cookieParser from 'cookie-parser';
-import debug from 'debug';
-import http from 'http';
-import { Server as Socket } from 'socket.io';
 import { Application } from './app.js';
-import { mongodbClient } from './config/mongoose.js';
-import { redisClient } from './config/redis.js';
-import usersMW from './middleware/users.js';
+import { Session } from './middleware/sessions.js';
+import { Server as Socket } from 'socket.io';
+import cookieParser from 'cookie-parser';
 import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
+import debug from 'debug';
 import { gameService } from './services/games.js';
+import http from 'http';
+import { mongodbClient } from './config/mongoose.js';
+import { passportClient } from './config/passport.js';
+import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
+import { redisClient } from './config/redis.js';
+import sessionAdapter from './middleware//sessions.js';
 import { userService } from './services/users.js';
 
+// import usersMW from './middleware/users.js';
+
 const { promise, resolve, reject } = Promise.withResolvers();
+const serverdebug = debug('hangman:server');
 
 export function appServer() {
-  const serverdebug = debug('hangman:server');
-
   mongodbClient()
     .then((db) => {
       Application(db).then((app) => {
@@ -36,10 +39,14 @@ export function appServer() {
 
         // Wire up Socket to existing middlware.
         io.engine.use(cookieParser());
+        io.engine.use(Session());
 
         userService()
           .then((us) => {
-            io.engine.use(usersMW(us));
+            let passport = new passportClient(us);
+            new sessionAdapter(passport).forEach((middleware) =>
+              io.engine.use(middleware)
+            );
           })
           .catch((err) => {
             reject(err);

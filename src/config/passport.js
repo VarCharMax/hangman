@@ -1,11 +1,9 @@
-'use strict';
-
+import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as TwitterStrategy } from 'passport-twitter-oauth2';
+import { getDefaultExport } from '../lib/libraries';
 import passport from 'passport';
 
-const TwitterStrategy = require('passport-twitter').Strategy;
-const FacebookStrategy = require('passport-facebook').Strategy;
-
-module.exports = (usersService) => {
+export function passportClient(usersService) {
   const providerCallback = (providerName) =>
     function (req, token, tokenSecret, profile, done) {
       usersService
@@ -13,12 +11,12 @@ module.exports = (usersService) => {
         .then((user) => done(null, user), done);
     };
 
-  if (process.env.TWITTER_API_KEY && process.env.TWITTER_API_SECRET) {
+  if (process.env.TWITTER_APP_ID && process.env.TWITTER_APP_SECRET) {
     passport.use(
       new TwitterStrategy(
         {
-          consumerKey: process.env.TWITTER_API_KEY,
-          consumerSecret: process.env.TWITTER_API_SECRET,
+          clientID: process.env.TWITTER_APP_ID,
+          clientSecret: process.env.TWITTER_APP_SECRET,
           callbackURL: '/auth/twitter/callback',
           passReqToCallback: true,
         },
@@ -42,12 +40,12 @@ module.exports = (usersService) => {
   }
 
   if (process.env.NODE_ENV === 'test') {
-    const LocalStrategy = require('passport-local');
-    const uuid = require('uuid');
+    const LocalStrategy = getDefaultExport('passport-local');
+    const uuid = getDefaultExport('uuid');
     passport.use(
       new LocalStrategy((username, password, done) => {
         const userId = uuid.v4();
-        usersService.setUsername(userId, username).then(() => {
+        usersService.setUserName(userId, username).then(() => {
           done(null, { id: userId, name: username });
         });
       })
@@ -66,4 +64,4 @@ module.exports = (usersService) => {
   });
 
   return passport;
-};
+}

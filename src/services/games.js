@@ -2,7 +2,7 @@
 import { ObjectId } from 'mongodb';
 
 const emitter = new EventEmitter();
-const { promise, resolve, reject } = Promise.withResolvers();
+const { promise, resolve, reject } = Promise.withResolvers(); //Cache promise.
 
 export function gameService(mongoose) {
   if (!mongoose) {

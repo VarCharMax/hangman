@@ -4,7 +4,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "nodemon ./bin/www"
   },
   "nyc": {
     "require": [],
@@ -29,6 +29,8 @@
     "hogan-express": "^0.5.2",
     "mongoose": "^9.1.5",
     "morgan": "~1.10.1",
+    "passport-facebook": "^3.0.0",
+    "passport-twitter-oauth2": "^2.1.1",
     "redis": "^5.10.0",
     "serve-favicon": "~2.5.1",
     "socket.io": "^4.8.3",
@@ -36,6 +38,7 @@
     "uuid": "13.0.0"
   },
   "devDependencies": {
+    "@types/passport-oauth2": "^1.8.0",
     "chai": "^6.2.2",
     "coveralls": "^3.1.1",
     "dotenv": "^17.3.1",
@@ -52,7 +55,9 @@
     "mocha": "^11.7.5",
     "mocha-suppress-logs": "^0.6.0",
     "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.13",
     "nyc": "^17.1.0",
+    "passport-local": "^1.0.0",
     "puppeteer": "^24.37.3",
     "redis-js": "^0.1.2",
     "sinon": "^21.0.1",

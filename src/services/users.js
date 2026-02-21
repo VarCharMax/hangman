@@ -1,8 +1,8 @@
+import * as uuid from 'uuid';
+
 import { redisClient } from '../config/redis.js';
 
-const { promise, resolve, reject } = Promise.withResolvers();
-
-//TODO: To be consistent, redisClient should get passed in as parameter.
+const { promise, resolve, reject } = Promise.withResolvers(); //Cache promise.
 
 export function userService() {
   redisClient().then((redis) => {
@@ -10,9 +10,31 @@ export function userService() {
       reject('Redis server not found.');
     }
 
+    const getUser = (userId) =>
+      redis.get(`user:${userId}:name`).then((userName) => ({
+        id: userId,
+        name: userName,
+      }));
+
+    const setUserName = (userId, name) => redis.set(`user:${userId}:name`, name);
+
     const userService = {
+      getOrCreate: (provider, providerId, providerUsername) => {
+        let providerKey = `provider:${provider}:${providerId}:user`;
+        let newUserId = uuid.v4();
+        return redisClient.setNx(providerKey, newUserId).then((created) => {
+          if (created) {
+            return setUserName(newUserId, providerUsername).then(() =>
+              getUser(newUserId)
+            );
+          } else {
+            return redisClient.get(providerKey).then(getUser);
+          }
+        });
+      },
+      getUser: getUser,
       getUserName: (userId) => redis.get(`user:${userId}:name`),
-      setUserName: (userId, name) => redis.set(`user:${userId}:name`, name),
+      setUserName: setUserName,
       recordWin: (userId) => redis.zIncrBy('user:wins', 1, userId),
       getTopPlayers: () =>
         redis

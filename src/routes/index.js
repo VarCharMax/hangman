@@ -21,6 +21,7 @@ export default (gameService, usersService) => {
       .then(([created, available, username, ranking, top]) => {
         res.render('index', {
           title: 'Hangman',
+          loggedIn: req.user.isAuthenticated(),
           userId: userId,
           createdGames: created,
           availableGames: available,

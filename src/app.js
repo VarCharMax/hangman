@@ -1,19 +1,21 @@
+import { Session } from './middleware/sessions.js';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import debug from 'debug';
 import express from 'express';
-import render from 'hogan-express';
-import logger from 'morgan';
-import path from 'path';
 import favicon from 'serve-favicon';
 import { fileURLToPath } from 'url';
-import usersMW from './middleware/users.js';
+import { gameService } from './services/games.js';
 import gamesRoute from './routes/games.js';
 import homeRoute from './routes/index.js';
+import logger from 'morgan';
+import { passportClient } from './config/passport.js';
+import path from 'path';
 import profileRoute from './routes/profile.js';
-import { gameService } from './services/games.js';
+import render from 'hogan-express';
 import { userService } from './services/users.js';
 
+//Cache promise.
 const { promise, resolve, reject } = Promise.withResolvers();
 
 export function Application(db) {
@@ -39,7 +41,24 @@ export function Application(db) {
     .then((gs) => {
       userService()
         .then((us) => {
-          app.use(usersMW(us));
+          let passport = new passportClient();
+
+          const addAuthEndpoints = (provider) => {
+            app.post(`/auth/${provider}`, passport.authenticate(provider));
+            app.get(
+              `/auth/${provider}/callback`,
+              passport.authenticate(provider, {
+                successRedirect: '/',
+                failureRedirect: '/',
+                session: true,
+              })
+            );
+          };
+
+          app.use(Session(passport));
+          addAuthEndpoints('twitter');
+          addAuthEndpoints('facebook');
+
           app.use('/', homeRoute(gs, us));
           app.use('/games', gamesRoute(gs, us));
           app.use('/profile', profileRoute(us));

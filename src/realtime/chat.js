@@ -2,11 +2,9 @@ export default (io) => {
   const namespace = io.of('/chat');
 
   namespace.on('connection', (socket) => {
-    const user = socket.request.user;
-    let username;
-
-    if (user && user.name) {
-      username = user.name;
+    let username = null;
+    if (socket.request.user) {
+      username = socket.request.user.name;
     }
 
     //'joinRoom' event

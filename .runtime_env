@@ -1,6 +1,0 @@
-PORT=3000
-MONGODB_URL=mongodb://10.211.55.2/hangman
-REDIS_URL=redis://default@127.0.0.1:6379
-DEBUG=*
-DEBUG_COLORS=1
-NODE_ENV=dev

@@ -1,0 +1,18 @@
+OAuth 1.0 Keys
+Consumer Key
+KIVrPoi6URrttDC44yFIj9Uwm
+
+Access Token
+2010277988609445888-F6gHXp7msOzieb9QQg6iHF433mPicb
+
+Access Token Secret
+xuPY7BqSZ0MKJSHVUXyZ44BgY3DcBcey6r7WMYy2dqTQd
+
+
+OAuth 2.0 Keys
+Client Id
+b0ZFRnJvTGNWVnJTUGlpbkl4QkU6MTpjaQ
+
+
+Client Secret
+QDfo8CFt5FRvnGS0sVuRXq69-vIe4-UgQHnw2TSahkUNaN3SyW

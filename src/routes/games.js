@@ -42,7 +42,7 @@ export default (gameService, usersService) => {
         if (req.user && game.matches(req.body.word)) {
           usersService.recordWin(req.user.id);
           gameService.recordWinner(game.id, req.user.id);
-          res.send('Winner!!!');
+          // res.send('Winner!!!');
         }
         res.send({
           //Array of positions matching posted letter.

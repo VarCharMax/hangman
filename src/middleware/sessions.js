@@ -1,17 +1,23 @@
-import RedisStore from 'connect-redis';
+import { getNamedExport } from './../lib/libraries.js';
 import session from 'express-session';
 
-let config = {
-  secret: process.env.SESSION_SECRET,
-  saveUninitialized: false,
-  resave: false,
+const expressSession = function Session() {
+  let config = {
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    resave: false,
+  };
+
+  if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
+    const RedisStore = getNamedExport('RedisStore', 'connect-redis');
+    const redisStore = RedisStore(session);
+    config.store = new redisStore({ url: process.env.REDIS_URL });
+  }
+  return session(config);
 };
 
-if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
-  const redisStore = RedisStore(session);
-  config.store = new redisStore({ url: process.env.REDIS_URL });
-}
-
-const expressSession = session(config);
-
-export default (passport) => [expressSession, passport.initialize(), passport.session()];
+export default (passport) => [
+  expressSession(),
+  passport.initialize(),
+  passport.session(),
+];

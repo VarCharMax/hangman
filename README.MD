@@ -9,19 +9,20 @@ Classic Hangman game implemented in Node.js
 - Federated chat using Redis pub/sub.
 - Linting via ESLint.
 - Mocha unit tests.
+- Integration tests using Puppeteer.
 - Coverage via nyc.
 - Gulp test runner.
 
 Based on code from a fairly old Node.js book by Harry Cummings.
 
-Even though the project is old, I thought it would be a useful exercise to upgrade it to ES6 module (ESM) standards.
+Even though the project is old, I thought it would be both a useful exercise and a challenge to upgrade it to ES6 module (ESM) standards. I'm happy to report it has been completely successful, and also very productive, as I learned a lot about Node.js, Javacript, and various npm packages in the porcess.
 
 A few hurdles:
 
 - I'm not sure that converting the codebase to ESM was such a great idea.
 - Despite being available for 10 years, ESM still isn't widely used in Node.js projects. It took me a while to realise this, and I had been wondering why all code examples I saw on NPM were in CommonJS syntax. So it was bit bit of an adventure, and it tuned out there was one gotcha related to this issue (see below).
-- From the point of view of Node.js, the only real advantage to ESM I can see, apart from a slightly cooler syntax, is that it can load modules asynchronously. But CommonJS has several advantages - it can conditionally include, and include and instantiate in the one call. However, if you want to write isomorphic modules, ESM is really the only choice now, given the obsolesence of RequireJS, so that makes a good case for it.
-- Node.js probably isn't the ideal choice for this kind of application now. Despite a massive amount of work, the resulting interface is crude, and it isn't very robust. It's also wired up with a lot of jQuery, which is a fairly old approach now. (The author even suggests that Knockout would be a better tool.) However, the back end is very robust, and could still be used in a modern client-side implementation. The chat server is also good. It isn't implemented in WebSockets, though. I will look into re-implementing it, but the maintainers of the Socket.IO library say their technology has built-in features that you would have to create manually in Websockets.
+- From the point of view of Node.js, the only real advantage to ESM I can see, apart from a slightly cooler syntax, is that it can load modules asynchronously. But CommonJS has one advantage - it can include and instantiate in the one call. However, if you want to write isomorphic modules, ESM is really the only choice now, given the obsolesence of RequireJS, so that makes a good case for it.
+- Node.js probably isn't the ideal choice for this kind of application now. Despite a massive amount of work on my part, the resulting interface is crude, and it isn't very robust. It's also wired up with a lot of jQuery, which is a fairly old approach now. (The author even suggests that Knockout would be a better tool.) However, the services, built araound the MongoDB/Redis back end, are very robust, and could still be used in a modern client-side implementation. The Socket.IO chat server is also very good.
 
 The main things I have done:
 
@@ -43,11 +44,11 @@ Main issues:
 - There was a problem with the tests, due to ESM not working well with mocks using await (see above):
   `Failed to run Mocha due to error message: "require() cannot be used on an ESM graph with top-level await.`
   The problem is I'm not the one using `require()`, so I couldn't address the problem directly. `await` is being used quite reasonably in the `mongoose` mock code. I've worked around this by making both the live and mock implementations return the same Promise.
-- Unit tests are all working. Had to increase hook timeout. Important to call `.stop()` on mongo test server - that's why the tests were hanging at one point. Also, `mondodb.disconnect()` no longer supports a callback. Even so, I found that they were still hanging when uploaded to Travis-CI. I concluded that this must be because they are being invoked by a test runner inside the gulp file, which spawns a new process. For some reason, this wasn't shutting down cleanly on the remote server. So the fix was just to add the dreaded --exit parameter. I occasioally see timeouts on Travis too, so I might have to increase the timeout.
-- The source book, while full of great programming examples, and still worth reading, unfortunately seems to get sloppy in the later chapters, telling the reader to just look at the repository code rather than expecting an explanation. But some of the later code either doesn't work, or has outright mistakes. I've fixed all of these. The result is functionally identical to the book, and all the tests succeed.
+- Unit tests are all working. Had to increase hook timeout. Important to call `.stop()` on mongo test server - that's why the tests were hanging at one point. Also, `mondodb.disconnect()` no longer supports a callback. Even so, I found that they were still hanging when uploaded to Travis-CI. I concluded that this must be because they are being invoked by a test runner inside the gulp file, which spawns a new process. This wasn't shutting down cleanly on the CI server. So the fix was just to add the dreaded --exit parameter. I occasionally see timeouts on Travis too, so I might have to increase the timeout.
+- The source book, while full of great programming examples, and still worth reading, unfortunately seems to get sloppy in the later chapters, telling the reader to just look at the repository code rather than expecting an explanation. But some of the later code either doesn't work, or has outright mistakes. I've fixed all of these. The result is functionally identical to the book, and all the tests all succeed.
 
 ## TODO
 
 - DB implementation isn't fully DI - I'm calling library-specific methods in native code. Methods should be wrapped in order to isolate database implementation from calling code.
 - Add improvements to interface. Should show win or lose based on number of tries. Add link back to homepage.
-- User id is created automatically the first time a user navigates to the site. But creating a user name is optional. You can create games without having one (but you can't enter the chat). But what happen if you change the user name? Or try to create one that is already in use? It isn't clear.
+- User id is created automatically the first time a user navigates to the site. But creating a user name is optional. You can create games without having one (but you can't enter the chat). But what happens if you change the user name? Or try to create one that is already in use? It isn't clear.
