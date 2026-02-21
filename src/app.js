@@ -15,7 +15,7 @@ import profileRoute from './routes/profile.js';
 import render from 'hogan-express';
 import { userService } from './services/users.js';
 
-//Cache promise.
+//Cache promise to create singleton service provider.
 const { promise, resolve, reject } = Promise.withResolvers();
 
 export function Application(db) {
