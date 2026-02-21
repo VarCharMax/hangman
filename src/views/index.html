@@ -13,24 +13,24 @@
     <h2>Account</h2>
     {{#ranking}}
     <p>You are ranked #{{ranking.rank}} with {{ranking.wins}} wins!</p>
-    {{/ranking}}
-    {{^loggedIn}}
+    {{/ranking}} {{^loggedIn}}
     <form action="/auth/twitter" method="POST">
-      <input type="submit" value="Log in using Twitter"
+      <input type="submit" value="Log in using Twitter" ? />
     </form>
-    {{/loggedIn}}
-    {{#loggedIn}}
+    <form action="/auth/facebook" method="POST">
+      <input type="submit" value="Log in using Facebook" />
+    </form>
+    {{/loggedIn}} {{#loggedIn}}
     <form action="/logout" method="POST">
-        <input type="submit" value="Log out" />
-      </form>
+      <input type="submit" value="Log out" />
+    </form>
     <h2>Profile</h2>
     <form action="/profile" method="POST">
       <label for="username">Username:</label>
       <input type="text" name="name" id="name" value="{{username}}" />
       <input id="userCreate" type="submit" />
     </form>
-    {{/loggedIn}}
-    {{#userId}}
+    {{/loggedIn}} {{#userId}}
     <h2>Games</h2>
     <form action="/games" method="POST" id="createGame">
       <input type="text" name="word" id="word" placeholder="Enter a word to guess..." />
