@@ -42,7 +42,7 @@ export function Application(db) {
         .then((redis) => {
           usersService(redis)
             .then(async (us) => {
-              passportClient(us).then((passport) => {
+              passportClient(us).then(async (passport) => {
                 const addAuthEndpoints = (provider) => {
                   app.post(`/auth/${provider}`, passport.authenticate(provider));
                   app.get(
@@ -55,11 +55,9 @@ export function Application(db) {
                   );
                 };
 
-                //Should be possible to pass in array of middlewares to app.use() and io.engine.use().
-                //But it isn't working ...
-                // const { mw1, mw2, mw3 } = sessionAdapter(passport, redis);
-                //let adapt = sessionAdapter(passport, redis);
-                app.use(sessionAdapter(passport, redis)); // Array of middlewares.
+                let sessionMiddlewares = await sessionAdapter(passport, redis);
+
+                app.use(...(await sessionAdapter(passport, redis))); // Array of middlewares.
                 addAuthEndpoints('twitter');
                 addAuthEndpoints('facebook');
 
