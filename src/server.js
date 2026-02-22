@@ -1,7 +1,5 @@
 import { Application } from './app.js';
-import { Session } from './middleware/sessions.js';
 import { Server as Socket } from 'socket.io';
-import cookieParser from 'cookie-parser';
 import createChatServer from './realtime/chat.js';
 import createGameServer from './realtime/games.js';
 import debug from 'debug';
@@ -11,8 +9,8 @@ import { mongodbClient } from './config/mongoose.js';
 import { passportClient } from './config/passport.js';
 import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
 import { redisClient } from './config/redis.js';
-import sessionAdapter from './middleware//sessions.js';
-import { userService } from './services/users.js';
+import { sessionAdapter } from './middleware/sessions.js';
+import { usersService } from './services/users.js';
 
 // import usersMW from './middleware/users.js';
 
@@ -27,24 +25,22 @@ export function appServer() {
 
         const server = http.createServer(app);
         const io = new Socket(server);
+        let redis = null;
 
-        // Create federated io server using Redis.
-        if (process.env.REDIS_URL && process.env.NODE_ENV !== 'test') {
+        // Redis client used for federated io server and session storage.
+        if (process.env.NODE_ENV !== 'test') {
           redisClient().then(async (rd) => {
+            redis = rd;
             const subClient = rd.duplicate();
             await subClient.connect();
             io.adapter(redisAdapter(rd, subClient));
           });
         }
 
-        // Wire up Socket to existing middlware.
-        io.engine.use(cookieParser());
-        io.engine.use(Session());
-
-        userService()
+        usersService(redis)
           .then((us) => {
             let passport = new passportClient(us);
-            new sessionAdapter(passport).forEach((middleware) =>
+            new sessionAdapter(passport, redis).forEach((middleware) =>
               io.engine.use(middleware)
             );
           })

@@ -1,6 +1,6 @@
 import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as TwitterStrategy } from 'passport-twitter-oauth2';
-import { getDefaultExport } from '../lib/libraries';
+import { getDefaultExport } from '../lib/libraries.js';
 import passport from 'passport';
 
 export function passportClient(usersService) {
@@ -17,7 +17,7 @@ export function passportClient(usersService) {
         {
           clientID: process.env.TWITTER_APP_ID,
           clientSecret: process.env.TWITTER_APP_SECRET,
-          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/twitter/callback`,
+          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/twitter/callback`
           // passReqToCallback: true,
         },
         providerCallback('twitter')
@@ -31,7 +31,7 @@ export function passportClient(usersService) {
         {
           clientID: process.env.FACEBOOK_APP_ID,
           clientSecret: process.env.FACEBOOK_APP_SECRET,
-          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/facebook/callback`,
+          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/facebook/callback`
           //passReqToCallback: true,
         },
         providerCallback('facebook')
