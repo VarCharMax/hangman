@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import { expect } from 'chai';
 import { userService } from '../../src/services/users.js';
 
@@ -24,12 +22,45 @@ describe('User service', function () {
         .then(() => done(), done);
     });
 
-    it('should return null if no username', (done) => {
+    it('should return null if no username is set', (done) => {
       const userId = 'user-id-2';
 
       u_service
         .getUserName(userId)
         .then((name) => expect(name).to.be.null)
+        .then(() => done(), done);
+    });
+  });
+
+  describe('getOrCreate', () => {
+    let provider = 'twitter',
+      providerId,
+      providerUsername = 'twitteruser';
+
+    beforeEach(() => {
+      providerId = new Date().getTime();
+    });
+
+    it('creates a new user for the external account if one does not exist', (done) => {
+      u_service
+        .getOrCreate(provider, providerId, providerUsername)
+        .then((createdUser) => {
+          expect(createdUser.id).to.exist;
+          expect(createdUser.name).to.equal(providerUsername);
+        })
+        .then(() => done(), done);
+    });
+
+    it('returns a user already associated with the external account', (done) => {
+      u_service
+        .getOrCreate(provider, providerId, providerUsername)
+        .then((createdUser) =>
+          u_service
+            .getOrCreate(provider, providerId, 'renamedtwitteruser')
+            .then((retrievedUser) => {
+              expect(retrievedUser).to.eql(createdUser);
+            })
+        )
         .then(() => done(), done);
     });
   });
@@ -40,7 +71,7 @@ describe('User service', function () {
       { userId: 'user2', name: 'Two' },
       { userId: 'user3', name: 'Three' },
       { userId: 'user4', name: 'Four' },
-      { userId: 'user5', name: 'Five' },
+      { userId: 'user5', name: 'Five' }
     ];
 
     before(function (done) {

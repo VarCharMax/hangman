@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import bodyParser from 'body-parser';
 import { expect } from 'chai';
 import express from 'express';

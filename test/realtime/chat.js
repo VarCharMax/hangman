@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-
+import { Server as Socket } from 'socket.io';
+import createChatServer from '../../src/realtime/chat.js';
+import createClient from 'socket.io-client';
 import { expect } from 'chai';
 import http from 'http';
-import { Server as Socket } from 'socket.io';
-import createClient from 'socket.io-client';
-import createChatServer from '../../src/realtime/chat.js';
 
 describe('chat', function () {
   this.timeout(20000);
@@ -30,7 +28,7 @@ describe('chat', function () {
         // Translate client extraHeaders data into request user.name.
         io.engine.use((req, res, next) => {
           req.user = {
-            name: req.headers.username,
+            name: req.headers.username
           };
           next();
         });
@@ -159,7 +157,7 @@ describe('chat', function () {
 
     let user = {
       name: name,
-      client: createClient(url, { extraHeaders: headers }), //middleware will convert this into user.name request object.
+      client: createClient(url, { extraHeaders: headers }) //middleware will convert this into user.name request object.
     };
 
     createdClients.push(user.client);

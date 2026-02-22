@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 import { expect } from 'chai';
 import { gameService } from '../../src/services/games.js';
 import { mongodbClient } from '../../src/config/mongoose.js';
