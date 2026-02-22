@@ -41,31 +41,35 @@ export function Application(db) {
       redisClient()
         .then((redis) => {
           usersService(redis)
-            .then((us) => {
-              let passport = new passportClient();
+            .then(async (us) => {
+              passportClient(us).then((passport) => {
+                const addAuthEndpoints = (provider) => {
+                  app.post(`/auth/${provider}`, passport.authenticate(provider));
+                  app.get(
+                    `/auth/${provider}/callback`,
+                    passport.authenticate(provider, {
+                      successRedirect: '/',
+                      failureRedirect: '/',
+                      session: true
+                    })
+                  );
+                };
 
-              const addAuthEndpoints = (provider) => {
-                app.post(`/auth/${provider}`, passport.authenticate(provider));
-                app.get(
-                  `/auth/${provider}/callback`,
-                  passport.authenticate(provider, {
-                    successRedirect: '/',
-                    failureRedirect: '/',
-                    session: true
-                  })
-                );
-              };
+                //Should be possible to pass in array of middlewares to app.use() and io.engine.use().
+                //But it isn't working ...
+                // const { mw1, mw2, mw3 } = sessionAdapter(passport, redis);
+                //let adapt = sessionAdapter(passport, redis);
+                app.use(sessionAdapter(passport, redis)); // Array of middlewares.
+                addAuthEndpoints('twitter');
+                addAuthEndpoints('facebook');
 
-              app.use(sessionAdapter(passport, redis)); // Array of middlewares.
-              addAuthEndpoints('twitter');
-              addAuthEndpoints('facebook');
-
-              if (process.env.NODE_ENV === 'test') {
-                app.post(
-                  '/auth/test',
-                  passport.authenticate('local', { successRedirect: '/' })
-                );
-              }
+                if (process.env.NODE_ENV === 'test') {
+                  app.post(
+                    '/auth/test',
+                    passport.authenticate('local', { successRedirect: '/' })
+                  );
+                }
+              });
 
               app.use('/', homeRoute(gs, us));
               app.use('/games', gamesRoute(gs, us));

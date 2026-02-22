@@ -3,7 +3,7 @@ import { Strategy as TwitterStrategy } from 'passport-twitter-oauth2';
 import { getDefaultExport } from '../lib/libraries.js';
 import passport from 'passport';
 
-export function passportClient(usersService) {
+export async function passportClient(usersService) {
   const providerCallback = (providerName) =>
     function (req, token, tokenSecret, profile, done) {
       usersService
@@ -41,8 +41,8 @@ export function passportClient(usersService) {
 
   // Dummy login for tests.
   if (process.env.NODE_ENV === 'test') {
-    const LocalStrategy = getDefaultExport('passport-local');
-    const uuid = getDefaultExport('uuid');
+    const LocalStrategy = await getDefaultExport('passport-local');
+    const uuid = await getDefaultExport('uuid');
     passport.use(
       new LocalStrategy((username, password, done) => {
         const userId = uuid.v4();

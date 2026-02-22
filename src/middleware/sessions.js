@@ -1,7 +1,7 @@
 import { getNamedExport } from './../lib/libraries.js';
 import session from 'express-session';
 
-const expressSession = async (redis) => {
+const expressSession = (redis) => {
   let config = {
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
@@ -9,9 +9,9 @@ const expressSession = async (redis) => {
   };
 
   if (redis) {
-    const RedisStore = await getNamedExport('RedisStore', 'connect-redis');
-    const redisStore = new RedisStore(session);
-    config.store = new redisStore({ client: redis });
+    getNamedExport('RedisStore', 'connect-redis').then((redisStore) => {
+      config.store = new redisStore({ client: redis });
+    });
   }
 
   return session(config); //OK

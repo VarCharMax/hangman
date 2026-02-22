@@ -38,11 +38,13 @@ export function appServer() {
         }
 
         usersService(redis)
-          .then((us) => {
-            let passport = new passportClient(us);
-            new sessionAdapter(passport, redis).forEach((middleware) =>
-              io.engine.use(middleware)
-            );
+          .then(async (us) => {
+            passportClient(us).then((passport) => {
+              // io.engine.use(sessionAdapter(passport, redis)); // Array of middlewares.
+              //sessionAdapter(passport, redis).forEach((middleware) =>
+              io.engine.use(sessionAdapter(passport, redis));
+              //);
+            });
           })
           .catch((err) => {
             reject(err);

@@ -37,11 +37,8 @@ export async function mongodbClient() {
     }
   }
 
-  // mongoose.connect(mongoconn);
-
   let db = mongoose.connection;
   db.once('open', () => {
-    dbdebug(`Connecting to mock db server: ${mongoconn} ...`);
     resolve(mongoose);
   });
   db.on('error', reject);
