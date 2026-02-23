@@ -55,9 +55,9 @@ export function Application(db) {
                   );
                 };
 
-                let sessionMiddlewares = await sessionAdapter(passport, redis);
+                // let sessionMiddlewares = await sessionAdapter(passport, redis);
 
-                app.use(...(await sessionAdapter(passport, redis))); // Array of middlewares.
+                app.use(await sessionAdapter(passport, redis)); // Array of middlewares.
                 addAuthEndpoints('twitter');
                 addAuthEndpoints('facebook');
 

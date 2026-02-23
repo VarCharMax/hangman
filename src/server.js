@@ -41,7 +41,7 @@ export function appServer() {
           .then(async (us) => {
             passportClient(us).then(async (passport) => {
               //sessionAdapter(passport, redis).forEach((middleware) =>
-              io.engine.use(...(await sessionAdapter(passport, redis)));
+              io.engine.use(await sessionAdapter(passport, redis));
               //);
             });
           })

@@ -8,11 +8,11 @@ const { promise, resolve, reject } = Promise.withResolvers();
 
 export async function redisClient() {
   let client;
-
+  redisdebug('Connecting to Redis ...');
   if (process.env.REDIS_URL) {
     const createClient = await getNamedExport('createClient', 'redis');
     client = createClient({
-      url: process.env.REDIS_URL,
+      url: process.env.REDIS_URL
     });
   } else {
     redisdebug('Redis URL not found. Falling back to mock DB ...');
@@ -23,7 +23,10 @@ export async function redisClient() {
     client = new redisClientMock();
   }
 
-  client.on('ready', () => resolve(client));
+  client.on('ready', () => {
+    redisdebug(`Redis client connected on ${client.options.url}.`);
+    resolve(client);
+  });
   client.on('error', (err) => reject(err));
 
   client.connect();
