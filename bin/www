@@ -2,8 +2,8 @@ import { appServer } from '../src/server.js';
 import debug from 'debug';
 import dotenv from 'dotenv';
 
-dotenv.config();
-dotenv.config({ path: './env/.env.runtime', override: true });
+dotenv.config({ quiet: true });
+dotenv.config({ path: './env/.env.runtime', override: true, quiet: true });
 if (process.env.NODE_ENV == 'dev') {
   dotenv.config({ path: './env/.env.debug', override: true, debug: true });
 }

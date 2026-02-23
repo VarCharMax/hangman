@@ -5,7 +5,6 @@ import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
 const integration_test = async () => {
-  // Launch application before test
   const appServer = await getNamedExport('appServer', '../server.js'); //Path is relative to lib folder, not this script.
 
   appServer().then((sv) => {

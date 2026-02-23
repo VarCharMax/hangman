@@ -2,7 +2,9 @@ import { dotEnvToString } from './../src/lib/libraries.js';
 import dotenv from 'dotenv';
 import run from 'gulp-run';
 
-const envs = dotEnvToString(dotenv.config({ path: './env/.env.test', override: true }));
+const envs = dotEnvToString(
+  dotenv.config({ path: './env/.env.test', override: true }).parsed
+);
 
 const unit_tests = () => {
   return run(
