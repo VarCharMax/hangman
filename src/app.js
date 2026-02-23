@@ -55,8 +55,6 @@ export function Application(db) {
                   );
                 };
 
-                // let sessionMiddlewares = await sessionAdapter(passport, redis);
-
                 app.use(await sessionAdapter(passport, redis)); // Array of middlewares.
                 addAuthEndpoints('twitter');
                 addAuthEndpoints('facebook');
@@ -85,7 +83,8 @@ export function Application(db) {
               // development error handler
               // will print stacktrace
               if (app.get('env') === 'development') {
-                app.use(function (err, _req, res, _next) {
+                // eslint-disable-next-line no-unused-vars
+                app.use(function (err, _req, res, next) {
                   res.status(err.status || 500);
                   res.render('error', {
                     message: err.message,
@@ -102,7 +101,8 @@ export function Application(db) {
 
           // production error handler
           // no stacktraces leaked to user
-          app.use(function (err, _req, res, _next) {
+          // eslint-disable-next-line no-unused-vars
+          app.use(function (err, _req, res, next) {
             res.status(err.status || 500);
             res.render('error', {
               message: err.message,

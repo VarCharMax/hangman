@@ -13,7 +13,7 @@ const expressSession = async (redis) => {
     config.store = new redisStore({ client: redis, prefix: 'hangman:' });
   }
 
-  return session(config); //OK
+  return session(config);
 };
 
 export async function sessionAdapter(passport, redis) {
