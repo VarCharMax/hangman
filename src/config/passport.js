@@ -17,7 +17,7 @@ export async function passportClient(usersService) {
         {
           clientID: process.env.TWITTER_APP_ID,
           clientSecret: process.env.TWITTER_APP_SECRET,
-          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/twitter/callback`
+          callbackURL: '/auth/twitter/callback'
           // passReqToCallback: true,
         },
         providerCallback('twitter')
@@ -31,7 +31,7 @@ export async function passportClient(usersService) {
         {
           clientID: process.env.FACEBOOK_APP_ID,
           clientSecret: process.env.FACEBOOK_APP_SECRET,
-          callbackURL: `http://127.0.0.1:${process.env.PORT}/auth/facebook/callback`
+          callbackURL: '/auth/facebook/callback'
           //passReqToCallback: true,
         },
         providerCallback('facebook')
