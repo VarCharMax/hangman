@@ -9,7 +9,7 @@ const integration_test = async () => {
   const appServer = await getNamedExport('appServer', '../server.js'); //Path is relative to lib folder, not this script.
 
   appServer().then((sv) => {
-    dotenv.config({ path: './env/.integration_test_env', override: true });
+    dotenv.config({ path: './env/.env.integration.test', override: true });
 
     sv.listen(process.env.TEST_PORT);
     sv.on('listening', onListening.bind(sv))
