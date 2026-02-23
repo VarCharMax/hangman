@@ -5,7 +5,7 @@ export default (gameService, usersService) => {
 
   /* GET home page. */
   router.get('/', function (req, res, next) {
-    let userId = null;
+    let userId = '';
 
     if (req.user) {
       userId = req.user.id;
@@ -16,22 +16,27 @@ export default (gameService, usersService) => {
       gameService.availableTo(userId),
       usersService.getUserName(userId),
       usersService.getRanking(userId),
-      usersService.getTopPlayers(),
+      usersService.getTopPlayers()
     ])
       .then(([created, available, username, ranking, top]) => {
         res.render('index', {
           title: 'Hangman',
-          loggedIn: req.user.isAuthenticated(),
+          loggedIn: req.isAuthenticated(),
           userId: userId,
           createdGames: created,
           availableGames: available,
           username: username,
           ranking: ranking,
           topPlayers: top,
-          partials: { createdGame: 'createdGame' },
+          partials: { createdGame: 'createdGame' }
         });
       })
       .catch(next);
+  });
+
+  router.post('/logout', function (req, res) {
+    req.logout();
+    res.redirect('/');
   });
 
   return router;
