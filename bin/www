@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 dotenv.config({ path: './env/.runtime_env', override: true });
 if (process.env.NODE_ENV == 'dev') {
-  dotenv.config({ path: './env/.debug_env', override: true });
+  dotenv.config({ path: './env/.debug_env', override: true, debug: true });
 }
 
 const serverdebug = debug('hangman:server');

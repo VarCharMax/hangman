@@ -40,9 +40,9 @@ export function appServer() {
         usersService(redis)
           .then(async (us) => {
             passportClient(us).then(async (passport) => {
-              //sessionAdapter(passport, redis).forEach((middleware) =>
-              io.engine.use(await sessionAdapter(passport, redis));
-              //);
+              (await sessionAdapter(passport, redis)).forEach((middleware) =>
+                io.engine.use(middleware)
+              );
             });
           })
           .catch((err) => {
