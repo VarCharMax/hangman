@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import express from 'express';
 import profile from '../../src/routes/profile.js';
 import request from 'supertest';
-import { userService } from '../../src/services/users.js';
+import { usersService } from '../../src/services/users.js';
 
 const userId = 'test-user-id';
 
@@ -18,7 +18,7 @@ describe('/profile', function () {
       next();
     });
 
-    userService().then((us) => {
+    usersService().then((us) => {
       uService = us;
       app.use('/profile', profile(us));
     });

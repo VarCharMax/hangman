@@ -5,7 +5,7 @@ import { gameService } from '../../src/services/games.js';
 import games from '../../src/routes/games.js';
 import { mongodbClient } from '../../src/config/mongoose.js';
 import request from 'supertest';
-import { userService } from '../../src/services/users.js';
+import { usersService } from '../../src/services/users.js';
 
 describe('/games', () => {
   let userId, agent, g_service, u_service, app;
@@ -23,7 +23,7 @@ describe('/games', () => {
         });
         gameService(mg).then((gs) => {
           g_service = gs;
-          userService().then((us) => {
+          usersService().then((us) => {
             u_service = us;
             app.use('/games', games(g_service, u_service));
             done();

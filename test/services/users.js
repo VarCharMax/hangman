@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { userService } from '../../src/services/users.js';
+import { usersService } from '../../src/services/users.js';
 
 let u_service;
 
 before((done) => {
-  userService().then((us) => {
+  usersService().then((us) => {
     u_service = us;
     done();
   });
