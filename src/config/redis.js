@@ -10,7 +10,12 @@ export async function redisClient() {
   if (process.env.REDIS_URL) {
     const createClient = await getNamedExport('createClient', 'redis');
     client = createClient({
-      url: process.env.REDIS_URL
+      url: process.env.REDIS_URL,
+      socket: {
+        tls: true,
+        rejectUnauthorized: false,
+        cert: process.env.REDIS_TLS_CERT
+      }
     });
   } else {
     redisdebug('Redis URL not found. Falling back to mock DB ...');
