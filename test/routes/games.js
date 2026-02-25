@@ -5,10 +5,11 @@ import { gameService } from '../../src/services/games.js';
 import games from '../../src/routes/games.js';
 import { mongodbClient } from '../../src/config/mongoose.js';
 import request from 'supertest';
-import { usersService } from '../../src/services/users.js';
+
+// import { usersService } from '../../src/services/users.js';
 
 describe('/games', () => {
-  let userId, agent, g_service, u_service, app;
+  let userId, agent, g_service, app;
   userId = 'test-user-id';
 
   before((done) => {
@@ -23,24 +24,23 @@ describe('/games', () => {
         });
         gameService(mg).then((gs) => {
           g_service = gs;
-          usersService().then((us) => {
-            u_service = us;
-            app.use('/games', games(g_service, u_service));
-            done();
-          });
+          app.use('/games', games(g_service));
+          done();
         });
       })
       .catch((err) => done(err));
   });
 
-  beforeEach(function (done) {
+  beforeEach(() => {
     agent = request.agent(app);
 
+    /*
     g_service
       .availableTo('non-existent-user') // return all games.
       .then((games) => games.map((game) => g_service.delete(game))) // An array of Promises of delete operations.
       .then((gamesRemoved) => Promise.all(gamesRemoved)) // Perform all delete operations.
       .then(() => done(), done);
+      */
   });
 
   describe('/:id DELETE', () => {
