@@ -12,9 +12,8 @@ export async function redisClient() {
     client = createClient({
       url: process.env.REDIS_URL,
       socket: {
-        tls: true,
-        rejectUnauthorized: false,
-        cert: process.env.REDIS_TLS_CERT
+        tls: process.env.REDIS_URL.match(/rediss:/) != null,
+        rejectUnauthorized: false
       }
     });
   } else {
