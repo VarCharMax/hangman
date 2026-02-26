@@ -6,8 +6,6 @@ import games from '../../src/routes/games.js';
 import { mongodbClient } from '../../src/config/mongoose.js';
 import request from 'supertest';
 
-// import { usersService } from '../../src/services/users.js';
-
 describe('/games', () => {
   let userId, agent, g_service, app;
   userId = 'test-user-id';
@@ -33,14 +31,6 @@ describe('/games', () => {
 
   beforeEach(() => {
     agent = request.agent(app);
-
-    /*
-    g_service
-      .availableTo('non-existent-user') // return all games.
-      .then((games) => games.map((game) => g_service.delete(game))) // An array of Promises of delete operations.
-      .then((gamesRemoved) => Promise.all(gamesRemoved)) // Perform all delete operations.
-      .then(() => done(), done);
-      */
   });
 
   describe('/:id DELETE', () => {

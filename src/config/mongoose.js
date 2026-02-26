@@ -1,5 +1,6 @@
+import { getConnectionString, getNamedExport } from './../lib/libraries.js';
+
 import debug from 'debug';
-import { getNamedExport } from './../lib/libraries.js';
 import mongoose from 'mongoose';
 
 const dbdebug = debug('hangman:config:mongoose');
@@ -9,10 +10,9 @@ let mongoconn = '';
 
 export async function mongodbClient() {
   dbdebug('Creating db client ...');
-
-  if (process.env.MONGODB_URL) {
-    dbdebug(`Connecting to db server: ${process.env.MONGODB_URL} ...`);
-    mongoconn = process.env.MONGODB_URL;
+  if (process.env.ORMONGO_RS_URL) {
+    mongoconn = getConnectionString(process.env.ORMONGO_RS_URL);
+    dbdebug(`Connecting to db server: ${mongoconn.substring(0, 50) + '...'} ...`);
     mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
   } else {
     dbdebug('MongoDB URL not found. Falling back to in-memory database...');
