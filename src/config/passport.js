@@ -15,12 +15,12 @@ export async function createPassportClient(usersService) {
         .then((user) => done(null, user), done);
     };
 
-  if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
+  if (process.env.TWITTER_APP_ID && process.env.TWITTER_APP_SECRET) {
     passport.use(
       new TwitterStrategy(
         {
           clientID: process.env.TWITTER_APP_ID,
-          clientSecret: process.env.TWITTER_CONSUMER_SECRET,
+          clientSecret: process.env.TWITTER_APP_SECRET,
           callbackURL: '/auth/twitter/callback'
           // passReqToCallback: true,
         },
