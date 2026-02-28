@@ -15,7 +15,7 @@ import { usersService } from './services/users.js';
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
 
-export function appServer() {
+export function createAppServer() {
   createMongodbClient()
     .then((db) => {
       Application(db).then((app) => {

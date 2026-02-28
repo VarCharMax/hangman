@@ -5,9 +5,9 @@ import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 
 const integration_test = async () => {
-  const appServer = await getNamedExport('appServer', '../server.js'); //Path is relative to lib folder, not this script.
+  const createAppServer = await getNamedExport('createAppServer', '../server.js'); //Path is relative to lib folder, not this script.
 
-  appServer().then((sv) => {
+  createAppServer().then((sv) => {
     dotenv.config({ path: './env/.env.integration.test', override: true });
 
     sv.listen(process.env.TEST_PORT);
