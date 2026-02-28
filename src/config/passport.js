@@ -3,7 +3,9 @@ import { Strategy as TwitterStrategy } from 'passport-twitter-oauth2';
 import { getDefaultExport } from '../lib/libraries.js';
 import passport from 'passport';
 
-export async function passportClient(usersService) {
+const { promise, resolve, reject } = Promise.withResolvers();
+
+export async function createPassportClient(usersService) {
   // Callback for both Twitter and Facebook strategies.
   const providerCallback = (providerName) =>
     function (accessToken, refreshToken, profile, done) {
@@ -66,5 +68,7 @@ export async function passportClient(usersService) {
       .catch(done);
   });
 
-  return passport;
+  resolve(passport);
+
+  return promise;
 }

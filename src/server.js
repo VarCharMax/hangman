@@ -3,13 +3,13 @@ import { Server as Socket } from 'socket.io';
 import { createChatServer } from './realtime/chat.js';
 import { createGameServer } from './realtime/games.js';
 import { createMongodbClient } from './config/mongoose.js';
+import { createPassportClient } from './config/passport.js';
 import { createAdapter as createRedisAdapter } from '@socket.io/redis-adapter';
 import { createRedisClient } from './config/redis.js';
 import { createSessionAdapter } from './middleware/sessions.js';
 import debug from 'debug';
 import { gameService } from './services/games.js';
 import http from 'http';
-import { passportClient } from './config/passport.js';
 import { usersService } from './services/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
@@ -35,9 +35,10 @@ export function createAppServer() {
           });
         }
 
-        usersService(redis) // Probably should be in above clause, since technically it will crash due to redis client not being created. But for testing purposes, we want to be able to run without redis.
+        usersService(redis) // Probably should be in above clause, since technically it will crash due to redis client not being created.
+          // But for testing purposes, we want to be able to run without redis.
           .then(async (us) => {
-            passportClient(us).then(async (passport) => {
+            createPassportClient(us).then(async (passport) => {
               createSessionAdapter(passport, redis).forEach((middleware) =>
                 io.engine.use(middleware)
               );

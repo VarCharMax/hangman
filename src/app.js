@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import { createPassportClient } from './config/passport.js';
 import { createRedisClient } from './config/redis.js';
 import { createSessionAdapter } from './middleware/sessions.js';
 import debug from 'debug';
@@ -9,7 +10,6 @@ import { gameService } from './services/games.js';
 import gamesRoute from './routes/games.js';
 import homeRoute from './routes/index.js';
 import logger from 'morgan';
-import { passportClient } from './config/passport.js';
 import path from 'path';
 import profileRoute from './routes/profile.js';
 import render from 'hogan-express';
@@ -41,8 +41,9 @@ export function Application(db) {
       createRedisClient()
         .then((redis) => {
           usersService(redis)
-            .then(async (us) => {
-              passportClient(us).then(async (passport) => {
+            .then((us) => {
+              createPassportClient(us).then((passport) => {
+                // Add auth endpoints for a provider.
                 const addAuthEndpoints = (provider) => {
                   app.post(`/auth/${provider}`, passport.authenticate(provider));
                   app.get(
@@ -55,7 +56,6 @@ export function Application(db) {
                   );
                 };
 
-                // createSessionAdapter(passport, redis).forEach((m) => app.use(m)); // Array of middlewares.
                 createSessionAdapter(passport, redis).forEach((middleware) =>
                   app.use(middleware)
                 );
@@ -68,51 +68,51 @@ export function Application(db) {
                     passport.authenticate('local', { successRedirect: '/' })
                   );
                 }
-              });
 
-              app.use('/', homeRoute(gs, us));
-              app.use('/games', gamesRoute(gs, us));
-              app.use('/profile', profileRoute(us));
+                // Rest of code should be goin in here since it depends on users service and passport client.
+                app.use('/', homeRoute(gs, us));
+                app.use('/games', gamesRoute(gs, us));
+                app.use('/profile', profileRoute(us));
 
-              // catch 404 and forward to error handler
-              app.use(function (req, res, next) {
-                var err = new Error('Not Found');
-                err.status = 404;
-                next(err);
-              });
+                // catch 404 and forward to error handler
+                app.use(function (req, res, next) {
+                  var err = new Error('Not Found');
+                  err.status = 404;
+                  next(err);
+                });
 
-              // error handlers
+                // error handlers
 
-              // development error handler
-              // will print stacktrace
-              if (app.get('env') === 'development') {
+                // development error handler
+                // will print stacktrace
+                if (app.get('env') === 'development') {
+                  app.use(function (err, _req, res, next) {
+                    res.status(err.status || 500);
+                    res.render('error', {
+                      message: err.message,
+                      error: err
+                    });
+                  });
+                }
+
+                // production error handler
+                // no stacktraces leaked to user
                 app.use(function (err, _req, res, next) {
                   res.status(err.status || 500);
                   res.render('error', {
                     message: err.message,
-                    error: err
+                    error: {}
                   });
                 });
-              }
+
+                resolve(app);
+              });
             })
             .catch((err) => {
               // Users Service error.
               appdebug(err);
               reject(err);
             });
-
-          // production error handler
-          // no stacktraces leaked to user
-
-          app.use(function (err, _req, res, next) {
-            res.status(err.status || 500);
-            res.render('error', {
-              message: err.message,
-              error: {}
-            });
-          });
-
-          resolve(app);
         })
         .catch((err) => {
           //Redis client error.
