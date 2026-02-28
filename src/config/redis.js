@@ -4,7 +4,7 @@ import { getNamedExport } from './../lib/libraries.js';
 const redisdebug = debug('hangman:config:redis');
 const { promise, resolve, reject } = Promise.withResolvers();
 
-export async function redisClient() {
+export async function createRedisClient() {
   let client;
   redisdebug('Connecting to Redis ...');
   if (process.env.REDIS_URL) {

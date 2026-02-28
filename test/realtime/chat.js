@@ -1,5 +1,5 @@
 import { Server as Socket } from 'socket.io';
-import createChatServer from '../../src/realtime/chat.js';
+import { createChatServer } from '../../src/realtime/chat.js';
 import createClient from 'socket.io-client';
 import { expect } from 'chai';
 import http from 'http';
@@ -75,8 +75,8 @@ describe('chat', function () {
   });
 
   it('broadcasts departure of named users', (done) => {
-    let connectedUser = createUser(null, 'Room1');
-    let newUser = createUser('User1', 'Room1');
+    let connectedUser = createUser('User1', 'Room1');
+    let newUser = createUser('User2', 'Room1');
     let left = false;
 
     // newUser leaving should broadcast message to connectedUser.

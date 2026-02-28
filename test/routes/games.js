@@ -1,9 +1,9 @@
 import bodyParser from 'body-parser';
+import { createMongodbClient } from '../../src/config/mongoose.js';
 import { expect } from 'chai';
 import express from 'express';
 import { gameService } from '../../src/services/games.js';
 import games from '../../src/routes/games.js';
-import { mongodbClient } from '../../src/config/mongoose.js';
 import request from 'supertest';
 
 describe('/games', () => {
@@ -11,7 +11,7 @@ describe('/games', () => {
   userId = 'test-user-id';
 
   before((done) => {
-    mongodbClient()
+    createMongodbClient()
       .then((mg) => {
         app = express();
         app.use(bodyParser.json());

@@ -6,7 +6,7 @@ import passport from 'passport';
 export async function passportClient(usersService) {
   // Callback for both Twitter and Facebook strategies.
   const providerCallback = (providerName) =>
-    function (req, token, tokenSecret, profile, done) {
+    function (accessToken, refreshToken, profile, done) {
       //accessToken, refreshToken, profile, cb - from documentation of passport-twitter-oauth2.
       usersService
         .getOrCreate(providerName, profile.id, profile.username || profile.displayName)

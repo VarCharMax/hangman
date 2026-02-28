@@ -1,6 +1,6 @@
+import { createMongodbClient } from '../../src/config/mongoose.js';
 import { expect } from 'chai';
 import { gameService } from '../../src/services/games.js';
-import { mongodbClient } from '../../src/config/mongoose.js';
 
 describe('Game service', () => {
   const firstUserId = 'user-id-1';
@@ -8,7 +8,7 @@ describe('Game service', () => {
   let service;
 
   before((done) => {
-    mongodbClient()
+    createMongodbClient()
       .then((mg) => {
         gameService(mg).then((gs) => {
           service = gs;

@@ -2,21 +2,21 @@ import { Application } from './app.js';
 import { Server as Socket } from 'socket.io';
 import { createChatServer } from './realtime/chat.js';
 import { createGameServer } from './realtime/games.js';
+import { createMongodbClient } from './config/mongoose.js';
 import { createAdapter as createRedisAdapter } from '@socket.io/redis-adapter';
+import { createRedisClient } from './config/redis.js';
 import { createSessionAdapter } from './middleware/sessions.js';
 import debug from 'debug';
 import { gameService } from './services/games.js';
 import http from 'http';
-import { mongodbClient } from './config/mongoose.js';
 import { passportClient } from './config/passport.js';
-import { redisClient } from './config/redis.js';
 import { usersService } from './services/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
 
 export function appServer() {
-  mongodbClient()
+  createMongodbClient()
     .then((db) => {
       Application(db).then((app) => {
         serverdebug('Server starting ...');
@@ -27,7 +27,7 @@ export function appServer() {
 
         // Redis client used for federated io server and session storage.
         if (process.env.NODE_ENV !== 'test') {
-          redisClient().then(async (rd) => {
+          createRedisClient().then(async (rd) => {
             redis = rd;
             const subClient = rd.duplicate();
             await subClient.connect();
@@ -35,7 +35,7 @@ export function appServer() {
           });
         }
 
-        usersService(redis)
+        usersService(redis) // Probably should be in above clause, since technically it will crash due to redis client not being created. But for testing purposes, we want to be able to run without redis.
           .then(async (us) => {
             passportClient(us).then(async (passport) => {
               createSessionAdapter(passport, redis).forEach((middleware) =>
@@ -60,7 +60,7 @@ export function appServer() {
           });
 
         server.on('close', async () => {
-          redisClient.then((rd) => {
+          createRedisClient().then((rd) => {
             rd.destroy();
           });
           io.disconnectSockets();

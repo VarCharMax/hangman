@@ -1,7 +1,7 @@
-import { mongod, mongodbClient } from '../src/config/mongoose.js';
+import { createMongodbClient, mongod } from '../src/config/mongoose.js';
 
+import { createRedisClient } from '../src/config/redis.js';
 import debug from 'debug';
-import { redisClient } from '../src/config/redis.js';
 
 const testdebug = debug('hangman:test');
 
@@ -10,7 +10,7 @@ export async function mochaGlobalSetup() {
   if (mongod) {
     await mongod.stop();
   }
-  redisClient().then(async (rd) => {
+  createRedisClient().then(async (rd) => {
     testdebug('Flushing redis mock db ...');
     await rd.flushDb();
   });
@@ -18,12 +18,12 @@ export async function mochaGlobalSetup() {
 
 export async function mochaGlobalTeardown() {
   testdebug('Teardown');
-  redisClient().then(async (rd) => {
+  createRedisClient().then(async (rd) => {
     testdebug('Destroying redis connection ...');
     await rd.destroy();
   });
 
-  mongodbClient().then(async (db) => {
+  createMongodbClient().then(async (db) => {
     testdebug('Disconnecting mongodb connection ...');
     db.connection.db.dropDatabase();
     await db.disconnect();

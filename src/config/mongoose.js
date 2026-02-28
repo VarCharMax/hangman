@@ -8,7 +8,7 @@ const { promise, resolve, reject } = Promise.withResolvers();
 let mongod = null;
 let mongoconn = '';
 
-export async function mongodbClient() {
+export async function createMongodbClient() {
   dbdebug('Creating db client ...');
   if (process.env.ORMONGO_RS_URL) {
     mongoconn = getConnectionString(process.env.ORMONGO_RS_URL);

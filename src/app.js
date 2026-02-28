@@ -1,4 +1,6 @@
 import bodyParser from 'body-parser';
+import { createRedisClient } from './config/redis.js';
+import { createSessionAdapter } from './middleware/sessions.js';
 import debug from 'debug';
 import express from 'express';
 import favicon from 'serve-favicon';
@@ -10,9 +12,7 @@ import logger from 'morgan';
 import { passportClient } from './config/passport.js';
 import path from 'path';
 import profileRoute from './routes/profile.js';
-import { redisClient } from './config/redis.js';
 import render from 'hogan-express';
-import { sessionAdapter } from './middleware/sessions.js';
 import { usersService } from './services/users.js';
 
 //Cache promise to create singleton provider.
@@ -38,7 +38,7 @@ export function Application(db) {
 
   gameService(db)
     .then((gs) => {
-      redisClient()
+      createRedisClient()
         .then((redis) => {
           usersService(redis)
             .then(async (us) => {
@@ -55,8 +55,10 @@ export function Application(db) {
                   );
                 };
 
-                // sessionAdapter(passport, redis).forEach((m) => app.use(m)); // Array of middlewares.
-                app.use(sessionAdapter(passport, redis)); // Array of middlewares.
+                // createSessionAdapter(passport, redis).forEach((m) => app.use(m)); // Array of middlewares.
+                createSessionAdapter(passport, redis).forEach((middleware) =>
+                  app.use(middleware)
+                );
                 addAuthEndpoints('twitter');
                 addAuthEndpoints('facebook');
 
