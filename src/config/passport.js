@@ -4,19 +4,21 @@ import { getDefaultExport } from '../lib/libraries.js';
 import passport from 'passport';
 
 export async function passportClient(usersService) {
+  // Callback for both Twitter and Facebook strategies.
   const providerCallback = (providerName) =>
     function (req, token, tokenSecret, profile, done) {
+      //accessToken, refreshToken, profile, cb - from documentation of passport-twitter-oauth2.
       usersService
         .getOrCreate(providerName, profile.id, profile.username || profile.displayName)
         .then((user) => done(null, user), done);
     };
 
-  if (process.env.TWITTER_APP_ID && process.env.TWITTER_APP_SECRET) {
+  if (process.env.TWITTER_CONSUMER_KEY && process.env.TWITTER_CONSUMER_SECRET) {
     passport.use(
       new TwitterStrategy(
         {
           clientID: process.env.TWITTER_APP_ID,
-          clientSecret: process.env.TWITTER_APP_SECRET,
+          clientSecret: process.env.TWITTER_CONSUMER_SECRET,
           callbackURL: '/auth/twitter/callback'
           // passReqToCallback: true,
         },

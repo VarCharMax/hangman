@@ -4,7 +4,7 @@
   "private": false,
   "type": "module",
   "scripts": {
-    "start": "nodemon NODE_ENV=development ./bin/www"
+    "start": "cross-env NODE_ENV=development node ./bin/www"
   },
   "nyc": {
     "require": [],

@@ -1,5 +1,5 @@
 //Relays game creation events under /games namespace.
-export default (io, service) => {
+export const createGameServer = (io, service) => {
   io.of('/games').on('connection', (socket) => {
     forwardEvent('gameSaved', socket);
     forwardEvent('gameRemoved', socket);

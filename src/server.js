@@ -1,18 +1,16 @@
 import { Application } from './app.js';
 import { Server as Socket } from 'socket.io';
-import createChatServer from './realtime/chat.js';
-import createGameServer from './realtime/games.js';
+import { createChatServer } from './realtime/chat.js';
+import { createGameServer } from './realtime/games.js';
+import { createAdapter as createRedisAdapter } from '@socket.io/redis-adapter';
+import { createSessionAdapter } from './middleware/sessions.js';
 import debug from 'debug';
 import { gameService } from './services/games.js';
 import http from 'http';
 import { mongodbClient } from './config/mongoose.js';
 import { passportClient } from './config/passport.js';
-import { createAdapter as redisAdapter } from '@socket.io/redis-adapter';
 import { redisClient } from './config/redis.js';
-import { sessionAdapter } from './middleware/sessions.js';
 import { usersService } from './services/users.js';
-
-// import usersMW from './middleware/users.js';
 
 const { promise, resolve, reject } = Promise.withResolvers();
 const serverdebug = debug('hangman:server');
@@ -33,14 +31,14 @@ export function appServer() {
             redis = rd;
             const subClient = rd.duplicate();
             await subClient.connect();
-            io.adapter(redisAdapter(rd, subClient));
+            io.adapter(createRedisAdapter(rd, subClient));
           });
         }
 
         usersService(redis)
           .then(async (us) => {
             passportClient(us).then(async (passport) => {
-              (await sessionAdapter(passport, redis)).forEach((middleware) =>
+              createSessionAdapter(passport, redis).forEach((middleware) =>
                 io.engine.use(middleware)
               );
             });

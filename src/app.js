@@ -46,7 +46,7 @@ export function Application(db) {
                 const addAuthEndpoints = (provider) => {
                   app.post(`/auth/${provider}`, passport.authenticate(provider));
                   app.get(
-                    `/auth/${provider}/callback`,
+                    `/auth/${provider}/callback`, //auth/twitter/callback
                     passport.authenticate(provider, {
                       successRedirect: '/',
                       failureRedirect: '/',
@@ -55,7 +55,8 @@ export function Application(db) {
                   );
                 };
 
-                app.use(await sessionAdapter(passport, redis)); // Array of middlewares.
+                // sessionAdapter(passport, redis).forEach((m) => app.use(m)); // Array of middlewares.
+                app.use(sessionAdapter(passport, redis)); // Array of middlewares.
                 addAuthEndpoints('twitter');
                 addAuthEndpoints('facebook');
 
@@ -83,7 +84,6 @@ export function Application(db) {
               // development error handler
               // will print stacktrace
               if (app.get('env') === 'development') {
-                 
                 app.use(function (err, _req, res, next) {
                   res.status(err.status || 500);
                   res.render('error', {
@@ -101,7 +101,7 @@ export function Application(db) {
 
           // production error handler
           // no stacktraces leaked to user
-           
+
           app.use(function (err, _req, res, next) {
             res.status(err.status || 500);
             res.render('error', {

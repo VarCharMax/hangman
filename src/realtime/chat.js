@@ -1,4 +1,4 @@
-export default (io) => {
+export const createChatServer = (io) => {
   const namespace = io.of('/chat');
 
   namespace.on('connection', (socket) => {
@@ -16,7 +16,7 @@ export default (io) => {
         socket.broadcast.to(room).emit('chatMessage', {
           username: username,
           message: 'has arrived',
-          type: 'action',
+          type: 'action'
         });
       }
 
@@ -25,12 +25,12 @@ export default (io) => {
         if (!username) {
           socket.emit('chatMessage', {
             message: 'Please choose a username',
-            type: 'warning',
+            type: 'warning'
           });
         } else {
           namespace.to(room).emit('chatMessage', {
             username: username,
-            message: message,
+            message: message
           });
         }
       });
@@ -40,7 +40,7 @@ export default (io) => {
           socket.broadcast.to(room).emit('chatMessage', {
             username: username,
             message: 'has left',
-            type: 'action',
+            type: 'action'
           });
         }
       });
