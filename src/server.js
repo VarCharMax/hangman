@@ -37,8 +37,8 @@ export function createAppServer() {
 
         usersService(redis) // Probably should be in above clause, since technically it will crash due to redis client not being created.
           // But for testing purposes, we want to be able to run without redis.
-          .then(async (us) => {
-            createPassportClient(us).then(async (passport) => {
+          .then((us) => {
+            createPassportClient(us).then((passport) => {
               createSessionAdapter(passport, redis).forEach((middleware) =>
                 io.engine.use(middleware)
               );
@@ -67,6 +67,7 @@ export function createAppServer() {
           io.disconnectSockets();
           await db.disconnect();
         });
+
         resolve(server);
       });
     })
