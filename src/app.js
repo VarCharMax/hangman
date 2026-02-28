@@ -42,72 +42,77 @@ export function Application(db) {
         .then((redis) => {
           usersService(redis)
             .then((us) => {
-              createPassportClient(us).then((passport) => {
-                // Add auth endpoints for a provider.
-                const addAuthEndpoints = (provider) => {
-                  app.post(`/auth/${provider}`, passport.authenticate(provider));
-                  app.get(
-                    `/auth/${provider}/callback`, //auth/twitter/callback
-                    passport.authenticate(provider, {
-                      successRedirect: '/',
-                      failureRedirect: '/',
-                      session: true
-                    })
+              createPassportClient(us)
+                .then((passport) => {
+                  // Add auth endpoints for a provider.
+                  const addAuthEndpoints = (provider) => {
+                    app.post(`/auth/${provider}`, passport.authenticate(provider));
+                    app.get(
+                      `/auth/${provider}/callback`, //auth/twitter/callback
+                      passport.authenticate(provider, {
+                        successRedirect: '/',
+                        failureRedirect: '/',
+                        session: true
+                      })
+                    );
+                  };
+
+                  createSessionAdapter(passport, redis).forEach((middleware) =>
+                    app.use(middleware)
                   );
-                };
+                  addAuthEndpoints('twitter');
+                  addAuthEndpoints('facebook');
 
-                createSessionAdapter(passport, redis).forEach((middleware) =>
-                  app.use(middleware)
-                );
-                addAuthEndpoints('twitter');
-                addAuthEndpoints('facebook');
+                  if (process.env.NODE_ENV === 'test') {
+                    app.post(
+                      '/auth/test',
+                      passport.authenticate('local', { successRedirect: '/' })
+                    );
+                  }
 
-                if (process.env.NODE_ENV === 'test') {
-                  app.post(
-                    '/auth/test',
-                    passport.authenticate('local', { successRedirect: '/' })
-                  );
-                }
+                  app.use('/', homeRoute(gs, us));
+                  app.use('/games', gamesRoute(gs, us));
+                  app.use('/profile', profileRoute(us));
 
-                // Rest of code should be goin in here since it depends on users service and passport client.
-                app.use('/', homeRoute(gs, us));
-                app.use('/games', gamesRoute(gs, us));
-                app.use('/profile', profileRoute(us));
+                  // catch 404 and forward to error handler
+                  app.use(function (req, res, next) {
+                    var err = new Error('Not Found');
+                    err.status = 404;
+                    next(err);
+                  });
 
-                // catch 404 and forward to error handler
-                app.use(function (req, res, next) {
-                  var err = new Error('Not Found');
-                  err.status = 404;
-                  next(err);
-                });
+                  // error handlers
 
-                // error handlers
+                  // development error handler
+                  // will print stacktrace
+                  if (app.get('env') === 'development') {
+                    app.use(function (err, _req, res, next) {
+                      res.status(err.status || 500);
+                      res.render('error', {
+                        message: err.message,
+                        error: err
+                      });
+                    });
+                  }
 
-                // development error handler
-                // will print stacktrace
-                if (app.get('env') === 'development') {
+                  // production error handler
+                  // no stacktraces leaked to user
                   app.use(function (err, _req, res, next) {
                     res.status(err.status || 500);
                     res.render('error', {
                       message: err.message,
-                      error: err
+                      error: {}
                     });
                   });
-                }
 
-                // production error handler
-                // no stacktraces leaked to user
-                app.use(function (err, _req, res, next) {
-                  res.status(err.status || 500);
-                  res.render('error', {
-                    message: err.message,
-                    error: {}
-                  });
-                });
-
-                resolve(app);
-              });
-            })
+                  resolve(app);
+                })
+                .catch((err) => {
+                  // Passport service error.
+                  appdebug(err);
+                  reject(err);
+                }); //End of passport service injection.
+            }) //End of service injections.
             .catch((err) => {
               // Users Service error.
               appdebug(err);
