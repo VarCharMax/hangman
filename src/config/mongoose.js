@@ -12,7 +12,7 @@ export async function createMongodbClient() {
   dbdebug('Creating db client ...');
   if (process.env.ORMONGO_RS_URL) {
     mongoconn = getConnectionString(process.env.ORMONGO_RS_URL);
-    dbdebug(`Connecting to db server: ${mongoconn.substring(0, 50) + '...'} ...`);
+    dbdebug(`Connecting to db server: ${mongoconn.substring(0, 50)} ...`);
     mongoose.connect(mongoconn); // Don't need to await - mongoose handles connection buffering internally;
   } else {
     dbdebug('MongoDB URL not found. Falling back to in-memory database...');
