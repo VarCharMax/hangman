@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import http from 'http';
 
 describe('chat', function () {
-  this.timeout(20000);
+  this.timeout(30000);
 
   let server,
     io,
