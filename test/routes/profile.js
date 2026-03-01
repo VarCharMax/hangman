@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import { createRedisClient } from '../../src/config/redis.js';
 import { expect } from 'chai';
 import express from 'express';
 import profile from '../../src/routes/profile.js';
@@ -18,9 +19,11 @@ describe('/profile', function () {
       next();
     });
 
-    usersService().then((us) => {
-      uService = us;
-      app.use('/profile', profile(us));
+    createRedisClient().then((redis) => {
+      usersService(redis).then((us) => {
+        uService = us;
+        app.use('/profile', profile(us));
+      });
     });
   });
 
