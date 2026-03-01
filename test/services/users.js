@@ -1,13 +1,18 @@
+import { createRedisClient } from '../../src/config/redis.js';
 import { expect } from 'chai';
 import { usersService } from '../../src/services/users.js';
 
 let u_service;
 
 before((done) => {
-  usersService().then((us) => {
-    u_service = us;
-    done();
-  });
+  createRedisClient()
+    .then((redis) => {
+      usersService(redis).then((us) => {
+        u_service = us;
+        done();
+      });
+    })
+    .catch((err) => done(err));
 });
 
 describe('User service', function () {
