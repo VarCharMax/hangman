@@ -26,7 +26,9 @@ export async function createRedisClient() {
   }
 
   client.on('ready', () => {
-    // redisdebug(`Redis client connected on ${client.options.url}.`);
+    redisdebug(
+      `Redis client connected on ${client.options ? client.options.url : 'mock DB'}.`
+    );
     resolve(client);
   });
   client.on('error', (err) => reject(err));

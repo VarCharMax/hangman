@@ -1,6 +1,8 @@
 import { RedisStore } from 'connect-redis';
-import { getNamedExport } from './../lib/libraries.js';
 import session from 'express-session';
+
+// import { getNamedExport } from './../lib/libraries.js';
+
 
 const expressSession = (redis) => {
   let config = {
